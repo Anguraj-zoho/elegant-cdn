@@ -19,39 +19,73 @@
     return window.innerWidth <= TABLET_BREAKPOINT;
   }
 
-  /* ── Read data-active-item and set the active menu item ── */
+  /* ── Read data-active-item and set the active menu item (per sidebar) ── */
   function initActiveFromData() {
-    var sidebar = document.querySelector('.sidemenu');
-    if (!sidebar) return;
+    document.querySelectorAll('.sidemenu').forEach(function (sidebar) {
+      var activeItemName = sidebar.getAttribute('data-active-item');
+      if (!activeItemName) return;
 
-    var activeItemName = sidebar.getAttribute('data-active-item');
-    if (!activeItemName) return;
-
-    var items = sidebar.querySelectorAll('.sidemenu__item');
-    items.forEach(function (item) {
-      if (item.textContent.trim() === activeItemName) {
-        item.classList.add('sidemenu__item--active');
-      } else {
-        item.classList.remove('sidemenu__item--active');
-      }
+      sidebar.querySelectorAll('.sidemenu__item').forEach(function (item) {
+        if (item.textContent.trim() === activeItemName) {
+          item.classList.add('sidemenu__item--active');
+        } else {
+          item.classList.remove('sidemenu__item--active');
+        }
+      });
     });
   }
 
-  /* ── Auto-expand the section that contains the active item ── */
+  /* ── Shared: animated show / hide using max-height + opacity ── */
+  function animateOpen(el) {
+    el.style.display = '';
+    // Set starting frame
+    el.style.overflow = 'hidden';
+    el.style.maxHeight = '0px';
+    el.style.opacity = '0';
+    el.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
+    // Force reflow so transition kicks in
+    void el.offsetHeight;
+    // Animate to full natural height
+    el.style.maxHeight = el.scrollHeight + 'px';
+    el.style.opacity = '1';
+    // Clean inline styles after transition so nested items can grow freely
+    setTimeout(function () {
+      el.style.maxHeight = '';
+      el.style.overflow = '';
+      el.style.opacity = '';
+      el.style.transition = '';
+    }, 260);
+  }
+
+  function animateClose(el) {
+    el.style.overflow = 'hidden';
+    el.style.maxHeight = el.scrollHeight + 'px';
+    el.style.opacity = '1';
+    el.style.transition = 'max-height 0.25s ease, opacity 0.2s ease';
+    void el.offsetHeight;
+    el.style.maxHeight = '0px';
+    el.style.opacity = '0';
+    setTimeout(function () {
+      el.style.display = 'none';
+      el.style.maxHeight = '';
+      el.style.overflow = '';
+      el.style.opacity = '';
+      el.style.transition = '';
+    }, 260);
+  }
+
+  /* ── Auto-expand the section that contains the active item (per sidebar) ── */
   function initAutoExpand() {
-    var active = document.querySelector('.sidemenu__item--active');
-    if (!active) return;
-
-    var section = active.closest('.sidemenu__section');
-    if (!section) return;
-
-    var chevron  = section.querySelector('.sidemenu__chevron');
-    var children = section.querySelectorAll(
-      '.sidemenu__l2-subheader, .sidemenu__item'
-    );
-
-    children.forEach(function (el) { el.style.display = ''; });
-    if (chevron) chevron.src = CHEVRON_DOWN;
+    document.querySelectorAll('.sidemenu__item--active').forEach(function (active) {
+      var section = active.closest('.sidemenu__section');
+      if (!section) return;
+      var chevron  = section.querySelector('.sidemenu__chevron');
+      var children = section.querySelectorAll(
+        '.sidemenu__l2-subheader, .sidemenu__item'
+      );
+      children.forEach(function (el) { el.style.display = ''; });
+      if (chevron) chevron.src = CHEVRON_DOWN;
+    });
   }
 
   /* ── Collapse / Expand sidebar (desktop + overlay close) ── */
@@ -132,7 +166,7 @@
     });
   }
 
-  /* ── L1 Section Expand / Collapse (skip --flat, handled by initFlatAccordion) ── */
+  /* ── L1 Section Expand / Collapse with animation (skip --flat, handled by initFlatAccordion) ── */
   function initSectionToggle() {
     document.querySelectorAll('.sidemenu__l1:not(.sidemenu__l1--flat)').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -145,46 +179,44 @@
         var isOpen = children.length > 0 && children[0].style.display !== 'none';
 
         children.forEach(function (el) {
-          el.style.display = isOpen ? 'none' : '';
+          if (isOpen) animateClose(el); else animateOpen(el);
         });
 
         if (chevron) {
           chevron.src = isOpen ? CHEVRON_RIGHT : CHEVRON_DOWN;
+          chevron.style.transition = 'transform 0.2s ease';
         }
       });
     });
   }
 
-  /* ── Active Item Highlight on click ── */
+  /* ── Active Item Highlight on click (scoped to each sidebar) ── */
   function initActiveItem() {
-    var sidebar = document.querySelector('.sidemenu');
-
-    document.querySelectorAll('.sidemenu__item').forEach(function (item) {
-      item.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelectorAll('.sidemenu__item--active').forEach(function (el) {
-          el.classList.remove('sidemenu__item--active');
-        });
-        item.classList.add('sidemenu__item--active');
-
-        if (sidebar) {
+    document.querySelectorAll('.sidemenu').forEach(function (sidebar) {
+      sidebar.querySelectorAll('.sidemenu__item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          e.preventDefault();
+          sidebar.querySelectorAll('.sidemenu__item--active').forEach(function (el) {
+            el.classList.remove('sidemenu__item--active');
+          });
+          item.classList.add('sidemenu__item--active');
           sidebar.setAttribute('data-active-item', item.textContent.trim());
-        }
+        });
       });
     });
   }
 
-  /* ── Search Filter ── */
+  /* ── Search Filter (scoped to each sidebar) ── */
   function initSearchFilter() {
-    var input = document.querySelector('.sidemenu__search input');
-    if (!input) return;
-
-    input.addEventListener('input', function () {
-      var query = input.value.toLowerCase().trim();
-
-      document.querySelectorAll('.sidemenu__item').forEach(function (item) {
-        var text = item.textContent.toLowerCase();
-        item.style.display = (!query || text.includes(query)) ? '' : 'none';
+    document.querySelectorAll('.sidemenu').forEach(function (sidebar) {
+      var input = sidebar.querySelector('.sidemenu__search input');
+      if (!input) return;
+      input.addEventListener('input', function () {
+        var query = input.value.toLowerCase().trim();
+        sidebar.querySelectorAll('.sidemenu__item').forEach(function (item) {
+          var text = item.textContent.toLowerCase();
+          item.style.display = (!query || text.includes(query)) ? '' : 'none';
+        });
       });
     });
   }
@@ -228,7 +260,7 @@
         var isOpen = children[0].style.display !== 'none';
 
         children.forEach(function (el) {
-          el.style.display = isOpen ? 'none' : '';
+          if (isOpen) animateClose(el); else animateOpen(el);
         });
         if (chevron) {
           chevron.src = isOpen ? CHEVRON_RIGHT : CHEVRON_DOWN;
