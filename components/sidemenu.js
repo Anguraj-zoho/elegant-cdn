@@ -11,8 +11,8 @@
 (function () {
   'use strict';
 
-  var CHEVRON_DOWN  = './assets/icons/icon-sm-chevron-down.svg';
-  var CHEVRON_RIGHT = './assets/icons/icon-sm-chevron-right.svg';
+  var CHEVRON_DOWN  = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-sm-chevron-down.svg';
+  var CHEVRON_RIGHT = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-sm-chevron-right.svg';
   var TABLET_BREAKPOINT = 1024;
 
   function isOverlayMode() {

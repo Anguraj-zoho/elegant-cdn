@@ -57,8 +57,8 @@
         const isChecked = icon.dataset.checked === 'true';
         icon.dataset.checked = isChecked ? 'false' : 'true';
         icon.src = isChecked
-          ? './assets/icons/icon-checkbox.svg'
-          : './assets/icons/icon-checkbox-checked.svg';
+          ? 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox.svg'
+          : 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox-checked.svg';
         item.classList.toggle('form-dropdown__item--active', !isChecked);
         updateSelectAll(item.closest('.form-dropdown'));
       });
@@ -77,16 +77,16 @@
           if (!icon) return;
           icon.dataset.checked = allChecked ? 'false' : 'true';
           icon.src = allChecked
-            ? './assets/icons/icon-checkbox.svg'
-            : './assets/icons/icon-checkbox-checked.svg';
+            ? 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox.svg'
+            : 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox-checked.svg';
           item.classList.toggle('form-dropdown__item--active', !allChecked);
         });
         const saIcon = row.querySelector('.form-dropdown__item-icon');
         if (saIcon) {
           saIcon.dataset.checked = allChecked ? 'false' : 'true';
           saIcon.src = allChecked
-            ? './assets/icons/icon-checkbox.svg'
-            : './assets/icons/icon-checkbox-checked.svg';
+            ? 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox.svg'
+            : 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox-checked.svg';
         }
       });
     });
@@ -101,13 +101,13 @@
     if (!saIcon) return;
     const checkedCount = [...items].filter(i => i.querySelector('.form-dropdown__item-icon')?.dataset.checked === 'true').length;
     if (checkedCount === 0) {
-      saIcon.src = './assets/icons/icon-checkbox.svg';
+      saIcon.src = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox.svg';
       saIcon.dataset.checked = 'false';
     } else if (checkedCount === items.length) {
-      saIcon.src = './assets/icons/icon-checkbox-checked.svg';
+      saIcon.src = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox-checked.svg';
       saIcon.dataset.checked = 'true';
     } else {
-      saIcon.src = './assets/icons/icon-checkbox-indeterminate.svg';
+      saIcon.src = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox-indeterminate.svg';
       saIcon.dataset.checked = 'partial';
     }
   }
@@ -120,14 +120,14 @@
         list.querySelectorAll('.form-dropdown__item--radio').forEach(i => {
           const icon = i.querySelector('.form-dropdown__item-icon');
           if (icon) {
-            icon.src = './assets/icons/icon-radio-unchecked.svg';
+            icon.src = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-radio-unchecked.svg';
             icon.dataset.checked = 'false';
           }
           i.classList.remove('form-dropdown__item--active');
         });
         const icon = item.querySelector('.form-dropdown__item-icon');
         if (icon) {
-          icon.src = './assets/icons/icon-radio-checked.svg';
+          icon.src = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-radio-checked.svg';
           icon.dataset.checked = 'true';
         }
         item.classList.add('form-dropdown__item--active');
@@ -184,7 +184,7 @@
           const icon = item.querySelector('.form-dropdown__item-icon');
           if (!icon) return;
           const isRadio = item.classList.contains('form-dropdown__item--radio');
-          icon.src = isRadio ? './assets/icons/icon-radio-unchecked.svg' : './assets/icons/icon-checkbox.svg';
+          icon.src = isRadio ? 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-radio-unchecked.svg' : 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/icon-checkbox.svg';
           icon.dataset.checked = 'false';
           item.classList.remove('form-dropdown__item--active');
         });

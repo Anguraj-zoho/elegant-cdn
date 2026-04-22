@@ -25,7 +25,7 @@
 var ElegantNotif = (function () {
   'use strict';
 
-  var ICON_PATH = './assets/icons/';
+  var ICON_PATH = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
   var ICONS = {
     success: ICON_PATH + 'icon-notif-success.svg',
     warning: ICON_PATH + 'icon-notif-warning.svg',

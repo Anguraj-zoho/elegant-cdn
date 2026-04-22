@@ -11,7 +11,7 @@
  *   2. PLAN    — Agent resolves each to a Lucide name via ICON_CATALOG below
  *   3. FETCH   — Agent downloads ONLY needed icons from CDN at required sizes
  *   4. SAVE    — Agent writes them to assets/lucide-icons/{name}-{size}.svg
- *   5. USE     — Agent writes <img src="./assets/lucide-icons/..."> in output
+ *   5. USE     — Agent writes <img src="https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/lucide-icons/..."> in output
  *
  *   If an icon is already in the folder (from a previous conversion), skip it.
  *
@@ -45,7 +45,7 @@
   'use strict';
 
   var CDN_BASE = 'https://cdn.jsdelivr.net/npm/lucide-static@1.7.0/icons/';
-  var LOCAL_BASE = './assets/lucide-icons/';
+  var LOCAL_BASE = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/lucide-icons/';
 
   /* ═══════════════════════════════════════════════════════════════
      STROKE WEIGHT BY RENDERED SIZE

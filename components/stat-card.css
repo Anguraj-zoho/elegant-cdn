@@ -1,0 +1,135 @@
+/* stat-card.css — extracted from data/Components-Wiki/stat_card.md (## Complete CSS) */
+
+/* ── Tile Widgets ── */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.tile-card {
+  background: #fff;
+  border: 1px solid #E9E9E9;
+  border-radius: 8px;
+  padding: 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.tile-card--wide { grid-column: span 2; }
+.tile-card .card__header { display: flex; align-items: center; margin-bottom: 12px; }
+.tile-card .card__title { font-size: 14px; font-weight: 600; color: #000; }
+.tile-card .card__toolbar {
+  margin-left: auto; display: flex; gap: 2px;
+  opacity: 0; transition: opacity .15s ease;
+}
+.tile-card:hover .card__toolbar { opacity: 1; }
+@media (max-width: 900px) {
+  .tile-grid { grid-template-columns: 1fr; }
+  .tile-card--wide { grid-column: span 1; }
+}
+
+.ti { display: flex; align-items: flex-end; gap: 18px; font-family: var(--font-family); }
+.ti-wide { width: 100%; }
+.ti-half { width: 100%; }
+.ti-big { font-size: 36px; font-weight: 400; color: #000; line-height: 1.1; }
+.ti-trend { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 500; margin-left: 8px; }
+.ti-trend-icon { width: 14px; height: 14px; }
+.ti-val-row { display: flex; align-items: baseline; flex-wrap: wrap; }
+.ti-label-sm { font-size: 12px; color: #626262; white-space: nowrap; }
+.ti-sev-row { display: flex; gap: 24px; align-items: center; }
+.ti-sev { display: flex; align-items: center; gap: 6px; font-size: 16px; }
+.ti-sev b { font-weight: 500; }
+.ti-sev-icon { width: 20px; height: 20px; }
+.ti-icon-sm { width: 14px; height: 14px; vertical-align: middle; opacity: .7; }
+
+/* Type 1 — bottom-aligned 3-column layout */
+.ti-1 { align-items: flex-end; }
+.ti-1-left { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: flex-end; }
+.ti-1-spark { flex: 0 0 200px; align-self: flex-end; }
+.ti-1-right { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.ti-1-sev-row { display: flex; align-items: center; gap: 24px; }
+.ti-1-sev-row .ti-label-sm { margin-bottom: 0; }
+.ti-1-divider { width: 100%; height: 0; border-top: 1px solid #E9E9E9; }
+.ti-1-meta-row { display: flex; gap: 40px; align-items: center; }
+.ti-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.ti-meta .ti-label-sm { margin-bottom: 0; }
+.ti-meta b { font-weight: 600; font-size: 16px; }
+.ti-spark { width: 100%; height: 50px; display: block; }
+
+/* Type 2 — priority bars */
+.ti-2 { flex-direction: column; align-items: stretch; gap: 0; }
+.ti-bars-track { display: flex; width: 100%; height: 8px; border-radius: 4px; overflow: hidden; }
+.ti-bars-seg { height: 100%; }
+.ti-bars { display: flex; gap: 0; width: 100%; margin-top: 8px; }
+.ti-bar-col { flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
+.ti-bar-val { font-size: 28px; font-weight: 400; color: #000; line-height: 1.1; }
+.ti-bar-label { font-size: 11px; color: #000; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+.ti-bar-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* Type 3 — incident columns */
+.ti-cols { display: flex; gap: 0; }
+.ti-col { padding: 4px 20px; }
+.ti-col-label { font-size: 12px; color: #626262; margin-bottom: 4px; }
+.ti-col-row { display: flex; align-items: center; gap: 6px; }
+.ti-col-val { font-size: 20px; font-weight: 500; }
+
+/* Type 4 — duration */
+.ti-4 { justify-content: space-between; }
+.ti-dur { display: flex; align-items: baseline; gap: 4px; }
+.ti-dur-big { font-size: 36px; font-weight: 400; color: #000; }
+.ti-dur-unit { font-size: 14px; color: #626262; margin-right: 12px; }
+.ti-icon-lg { width: 48px; height: 48px; }
+.ti-icon-hg { width: 48px; height: 56px; }
+
+/* Type 5 — SLA bar */
+.ti-5 { justify-content: space-between; flex-wrap: wrap; }
+.ti-5-left { display: flex; flex-direction: column; gap: 12px; }
+.ti-seg-bar { display: flex; width: 200px; height: 6px; border-radius: 3px; overflow: hidden; }
+.ti-seg { height: 100%; }
+
+/* Type 6 — tall with sparkline */
+.ti-6 { flex-wrap: wrap; align-items: flex-start; position: relative; }
+.ti-icon-bell { width: 32px; height: 32px; position: absolute; top: 0; right: 0; }
+.ti-spark-full { width: 100%; flex: 0 0 100%; margin-top: 8px; }
+.ti-spark-full .ti-spark { height: 80px; }
+
+/* Type 7 — investigation MTTI */
+.ti-7 { flex-wrap: wrap; align-items: flex-start; }
+.ti-sub { font-size: 12px; color: #626262; width: 100%; margin-top: 2px; }
+
+/* Type 8 — progress + severity */
+.ti-8 { flex-direction: column; align-items: stretch; gap: 6px; }
+.ti-8-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.ti-8-icon { width: 32px; height: 32px; flex-shrink: 0; }
+.ti-prog-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+.ti-prog-pct { font-size: 12px; font-weight: 500; color: #000; }
+.ti-prog-bar { width: 100%; height: 6px; background: #E9E9E9; border-radius: 3px; overflow: hidden; }
+.ti-prog-fill { height: 100%; border-radius: 3px; }
+
+/* Type 9 — donut + status cards */
+.ti-9 { flex-direction: column; align-items: stretch; gap: 10px; }
+.ti-9-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.ti-ring { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
+.ti-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ti-ring-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #000; }
+.ti-status-cards { display: flex; gap: 8px; }
+.ti-status-card {
+  flex: 1; padding: 8px 12px; background: #F5F8F5; border-radius: 4px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ti-sc-label { font-size: 11px; color: #626262; }
+.ti-sc-row { display: flex; align-items: center; gap: 6px; }
+.ti-sc-row b { font-size: 18px; font-weight: 500; color: #000; }
+.ti-sc-icon { width: 14px; height: 14px; }
+
+/* Type 10 — mini donut + legend */
+.ti-10 { flex-direction: column; align-items: stretch; gap: 8px; }
+.ti-10-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.ti-change { font-size: 12px; color: #198019; display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+.ti-change-arrow { font-size: 10px; }
+.ti-mini-donut { width: 48px; height: 48px; }
+.ti-mini-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ti-legend-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.ti-leg { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #000; }
+.ti-leg b { font-weight: 600; }
+.ti-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+

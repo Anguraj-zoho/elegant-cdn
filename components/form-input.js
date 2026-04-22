@@ -4,7 +4,7 @@
    file upload, validation states
    ============================================================ */
 (function () {
-  var ICON = './assets/icons/';
+  var ICON = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
 
   /* ── Password Toggle ── */
   function initPasswordToggles() {

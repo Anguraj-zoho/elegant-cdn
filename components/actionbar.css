@@ -1,0 +1,233 @@
+/* actionbar.css — extracted from data/Components-Wiki/actionbar.md (## Complete CSS) */
+
+/* ── ActionBar ── */
+.actionbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--actionbar-height);               /* 36px */
+  border-top: 1px solid #E9E9E9;                 /* Figma: strokeTop only */
+  background: var(--actionbar-bg);
+  padding: 6px 4px;                              /* Figma: padding 6 4 6 4 */
+}
+
+.actionbar__left,
+.actionbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;                                       /* Figma: itemSpacing 8 */
+}
+
+.actionbar__icon-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0;
+  transition: background 0.12s;
+}
+.actionbar__icon-btn:hover {
+  background: var(--table-header-bg);
+}
+.actionbar__icon-btn img,
+.actionbar__icon-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* View-type combined icon (grid + dropdown arrow) */
+.actionbar__icon-btn--view img,
+.actionbar__icon-btn--view svg {
+  width: 42px;
+  height: 24px;
+}
+.actionbar__icon-btn--view {
+  width: auto;
+}
+
+.actionbar__separator {
+  width: 1px;
+  height: 16px;
+  background: var(--actionbar-border);
+  flex-shrink: 0;
+}
+
+.actionbar__pagination {
+  font-size: var(--actionbar-pagination-font-size);
+  color: var(--sidebar-text-secondary);
+  white-space: nowrap;
+}
+.actionbar__pagination b {
+  color: var(--table-text-primary);
+  font-weight: 600;
+}
+.actionbar__pagination i {
+  font-style: italic;
+}
+
+/* Pagination prev/next arrows (24x24) */
+.actionbar__nav-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.actionbar__nav-btn img,
+.actionbar__nav-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Report ActionBar Primary Button (Type 8) ──
+   Outlined secondary-style button with icon + label,
+   used on the LEFT side of report-page action bars.
+   Default use: "+ Incident" to trigger Incident Workbench.
+   Also reusable for "+ Export", "+ Save View", etc. */
+.actionbar__btn-report {
+  height: 24px;
+  border: 1px solid #ABABAB;
+  border-radius: 2px;
+  padding: 5px 16px;
+  font-size: 12px;
+  font-family: var(--font-family);
+  background: #FFFFFF;
+  color: #000000;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: background 0.12s;
+}
+.actionbar__btn-report:hover {
+  background: #F0F0F0;
+}
+.actionbar__btn-report:active {
+  background: #E9E9E9;
+}
+.actionbar__btn-report img,
+.actionbar__btn-report svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* ── ActionBar Bulk Actions (Type 2) ── */
+.actionbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.actionbar__action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: #000;
+  border-radius: 2px;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+.actionbar__action:hover {
+  background: #E9E9E9;
+}
+.actionbar__action.actionbar__action--active {
+  background: #EAF0FC;
+}
+.actionbar__action img,
+.actionbar__action svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.actionbar__action--more {
+  padding: 5px 6px;
+}
+.actionbar__action--more img,
+.actionbar__action--more svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── ActionBar Selected Count (Type 7) ── */
+.actionbar__selected-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #000;
+  white-space: nowrap;
+}
+.actionbar__selected-count b {
+  font-weight: 600;
+}
+.actionbar__clear-all {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--link-color);
+  padding: 0;
+}
+.actionbar__clear-all:hover {
+  text-decoration: underline;
+}
+
+/* ── ActionBar Filter Dropdown (Type 5) ── */
+.actionbar__filter-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #000;
+  white-space: nowrap;
+}
+.actionbar__filter-dropdown select {
+  border: 1px solid #DCDCDC;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 2px 20px 2px 6px;
+  height: 24px;
+  background: #fff;
+  cursor: pointer;
+  appearance: auto;
+}
+
+/* ── ActionBar Toggle View (Type 6) ── */
+.actionbar__icon-btn--toggle {
+  width: auto;
+}
+.actionbar__icon-btn--toggle img,
+.actionbar__icon-btn--toggle svg {
+  width: 50px;
+  height: 20px;
+}
+
+/* ── ActionBar Table View Type (Type 4) ── */
+.actionbar__icon-btn--table-view {
+  width: auto;
+}
+.actionbar__icon-btn--table-view img,
+.actionbar__icon-btn--table-view svg {
+  width: 42px;
+  height: 24px;
+}
+

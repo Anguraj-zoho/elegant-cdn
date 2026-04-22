@@ -875,7 +875,7 @@
     var pageSize = opts.pageSize || 6;
     var page = 0;
     var totalPages = Math.ceil(members.length / pageSize);
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var unassignedAvatar = opts.unassignedAvatar || (iconBase + 'icon-avatar-unassigned.svg');
     var personAvatar = opts.personAvatar || (iconBase + 'icon-avatar-person.svg');
 
@@ -941,7 +941,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var alerts = data.alerts || [];
 
     var severityConfig = {
@@ -1001,7 +1001,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var summary = data.summary || {};
     var profiles = data.profiles || [];
     var subtitle = data.subtitle || 'Top 5 Alert Profiles';
@@ -1097,7 +1097,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var tiles = data.tiles || [];
 
     function render() {
@@ -1180,7 +1180,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var alerts = data.alerts || [];
 
     function render() {
@@ -1217,7 +1217,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var alerts = data.alerts || [];
 
     function render() {
@@ -1245,7 +1245,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var alerts = data.alerts || [];
 
     function render() {
@@ -1343,7 +1343,7 @@
     var dom = document.getElementById(domId);
     if (!dom) return null;
     var opts = options || {};
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var tiles = data.tiles || [];
     var chartData = data.chart || {};
     var chartId = domId + '-chart';
@@ -1474,7 +1474,7 @@
     if (!dom) return null;
     var opts = options || {};
     var type = opts.type || 1;
-    var iconBase = opts.iconBase || './assets/icons/';
+    var iconBase = opts.iconBase || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/';
     var h = '';
 
     var SEV_ICONS = {
@@ -2032,7 +2032,7 @@
         ]
       });
 
-      var gaugeSvgUrl = (opts.assetPath || './assets/icons/') + 'gauge-center.svg';
+      var gaugeSvgUrl = (opts.assetPath || 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main/assets/icons/') + 'gauge-center.svg';
       var sbContainer = document.getElementById(domId + '-sunburst');
       if (sbContainer) {
         var gaugeOverlay = document.createElement('div');
