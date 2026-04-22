@@ -221,11 +221,13 @@
     });
   }
 
-  /* ── Type 2: OS Dropdown toggle ── */
+  /* ── Type 2: OS Dropdown toggle + menu swap ── */
   function initOsDropdown() {
     document.querySelectorAll('.sidemenu__os-dropdown').forEach(function (dd) {
       var opts = dd.querySelector('.sidemenu__os-options');
       if (!opts) return;
+
+      var sidebar = dd.closest('.sidemenu');
 
       dd.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -240,6 +242,32 @@
           if (osLabel) osLabel.textContent = opt.getAttribute('data-label');
           if (osIcon && opt.getAttribute('data-icon')) osIcon.src = opt.getAttribute('data-icon');
           opts.classList.remove('sidemenu__os-options--open');
+
+          // Derive OS key from label text ("Windows" -> "windows", "Unix/Linux" -> "unix")
+          var rawLabel = (opt.getAttribute('data-label') || '').toLowerCase();
+          var osKey = rawLabel.indexOf('unix') !== -1 || rawLabel.indexOf('linux') !== -1 ? 'unix' : 'windows';
+
+          if (!sidebar) return;
+
+          // Swap visible sections based on data-os — and collapse any expanded L1
+          sidebar.querySelectorAll('.sidemenu__section[data-os]').forEach(function (sec) {
+            var secOs = sec.getAttribute('data-os');
+            if (secOs === osKey) {
+              sec.style.display = '';
+            } else {
+              sec.style.display = 'none';
+            }
+            // Reset chevrons + hide child items so accordion state is clean on swap
+            var chev = sec.querySelector('.sidemenu__chevron');
+            if (chev) chev.src = CHEVRON_RIGHT;
+            sec.querySelectorAll('.sidemenu__item').forEach(function (it) {
+              it.style.display = 'none';
+              it.style.maxHeight = '';
+              it.style.opacity = '';
+              it.style.transition = '';
+              it.style.overflow = '';
+            });
+          });
         });
       });
 
