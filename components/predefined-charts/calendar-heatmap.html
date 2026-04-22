@@ -1,0 +1,18 @@
+<!--
+  Elegant Predefined Chart: Calendar Heatmap
+  Usage: Daily volume over a year (login activity, alert frequency)
+-->
+<div class="card__chart" id="chart-calendar-1" style="width:100%;min-height:280px;"></div>
+<script>
+(function(){
+  var data = [];
+  var start = new Date('2026-01-01');
+  var end = new Date('2026-12-31');
+  for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    var iso = d.toISOString().slice(0, 10);
+    var dow = d.getDay();
+    data.push([iso, Math.round(Math.random() * 60 + (dow > 0 && dow < 6 ? 30 : 0))]);
+  }
+  ElegantEChart.calendarHeatmap('chart-calendar-1', { values: data, range: '2026' });
+})();
+</script>

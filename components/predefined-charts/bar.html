@@ -1,0 +1,16 @@
+<!--
+  Elegant Predefined Chart: Vertical Bar
+  Usage: Copy this block into any widget__body, update the ID and data.
+  Required scripts: lib/echarts.min.js, echarts-elegant-theme.js, echarts-widget.js
+-->
+<div class="card__chart" id="chart-bar-1" style="width:100%;min-height:280px;"></div>
+<script>
+ElegantEChart.bar('chart-bar-1', {
+  labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  datasets: [
+    { label: 'Critical', values: [12,19,8,15,22,6,10], color: '#DD1616' },
+    { label: 'High',     values: [8,14,11,9,17,5,7],   color: '#D14900' },
+    { label: 'Medium',   values: [20,25,18,22,30,12,15], color: '#FABB34' }
+  ]
+});
+</script>

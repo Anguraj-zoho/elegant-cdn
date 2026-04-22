@@ -1,0 +1,15 @@
+<!--
+  Elegant Predefined Chart: Stacked Area
+  Usage: Multi-series trends (events, traffic, logs)
+-->
+<div class="card__chart card__chart--tall" id="chart-stacked-1" style="width:100%;min-height:360px;"></div>
+<script>
+ElegantEChart.stackedArea('chart-stacked-1', {
+  labels: ['Nov 01','Nov 02','Nov 03','Nov 04','Nov 05','Nov 06','Nov 07'],
+  datasets: [
+    { label: 'Create', values: [120,150,180,200,220,250,230], color: '#2C66DD' },
+    { label: 'Delete', values: [300,320,350,380,400,420,440], color: '#DD1616' },
+    { label: 'Update', values: [50,60,55,70,65,80,75],        color: '#A51C50' }
+  ]
+});
+</script>

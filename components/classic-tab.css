@@ -1,0 +1,111 @@
+/* ============================================================
+   CLASSIC TAB — Captured from Figma MCP
+   Header tabs: h=32, spacing=-1px
+   Selected: white bg | Unselected: #E9E9E9
+   Stroke: #DCDCDC | Tab padding: 9px 16px
+   Body: white bg, border except top, strokeTop=0
+   ============================================================ */
+
+.classic-tab {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--classic-tab-padding-top);
+}
+
+/* Tab headers row
+   Note: `isolation:isolate` confines stacking WITHIN the tab strip so the
+   selected tab's bottom border can visually overlap its neighbours, WITHOUT
+   creating a global stacking context that would trap floating popovers
+   (like a Customize View drawer or an Export History panel opening from a
+   page-header button above the tabs). Previous version used `z-index:1`
+   which trapped overlays rendered in the main content layer. */
+.classic-tab__headers {
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+  position: relative;
+  isolation: isolate;
+}
+
+.classic-tab__header {
+  display: flex;
+  align-items: center;
+  height: var(--classic-tab-header-height);
+  padding: var(--classic-tab-padding);
+  font-size: var(--classic-tab-font-size);
+  font-family: inherit;
+  font-weight: 400;
+  border: 1px solid var(--classic-tab-stroke);
+  cursor: pointer;
+  white-space: nowrap;
+  margin-right: var(--classic-tab-header-spacing);
+  border-radius: 0;
+  line-height: 1;
+}
+
+.classic-tab__header--selected {
+  background: var(--classic-tab-selected-bg);
+  color: var(--header-title-color);
+  border-bottom-color: var(--classic-tab-selected-bg);
+}
+
+.classic-tab__header--unselected {
+  background: var(--classic-tab-unselected-bg);
+  color: var(--header-title-color);
+}
+.classic-tab__header--unselected:hover {
+  background: #e0e0e0;
+}
+
+/* Filler (fills remaining space in header row) */
+.classic-tab__filler {
+  flex: 1;
+  height: var(--classic-tab-header-height);
+  background: var(--classic-tab-unselected-bg);
+  border: 1px solid var(--classic-tab-stroke);
+}
+
+/* Tab body — hugs content (matches Figma primaryAxisSizingMode: AUTO) */
+.classic-tab__body {
+  background: var(--classic-tab-body-bg);
+  border: 1px solid var(--classic-tab-stroke);
+  border-top: none;
+}
+
+/* Inner content — matches Figma "Classic Tab table outer frame" padding: 16 all sides */
+.classic-tab__content {
+  padding: var(--classic-tab-body-padding);
+}
+
+/* ============================================================
+   SELF-DEFENSE RULES (added after repeated agent-authoring bugs)
+   ------------------------------------------------------------
+   Bug pattern: agent drops a .classic-tab into a drawer/form as a
+   "segmented control" and forgets the .classic-tab__body, causing
+   the tab strip to hang orphaned with no container border.
+
+   Fix: when a .classic-tab has no __body child, draw the bottom
+   border + padding ourselves so the tab strip still reads as a
+   framed section. No HTML change needed on consumer code.
+   ============================================================ */
+.classic-tab:not(:has(> .classic-tab__body)) {
+  padding-bottom: 0;
+  border: 1px solid var(--classic-tab-stroke);
+  border-top: 0;
+  background: var(--classic-tab-body-bg);
+}
+
+/* Dev hint: toggle <html data-cta-debug> to surface the violation
+   with a clear inline warning. Off by default so production builds
+   are silent. */
+html[data-cta-debug] .classic-tab:not(:has(> .classic-tab__body))::after {
+  content: "classic-tab missing .classic-tab__body — use line-tab for segmented controls, or add a body panel.";
+  display: block;
+  margin: 0;
+  padding: 6px 12px;
+  background: #FFF5F5;
+  color: #CF2F44;
+  font-size: 11px;
+  font-family: var(--font-family, inherit);
+  border-top: 1px dashed #CF2F44;
+}

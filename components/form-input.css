@@ -1,0 +1,964 @@
+/* ============================================================
+   FORM INPUT — Predefined Component
+   Extracted from Figma "Textbox with Label" & "Form Creation"
+   Specs: height 26px per row, 16px gap between rows, 24px gap
+   between form group and save/cancel bar
+   ──────────────────────────────────────────────────────────────
+   STRICT RULE #1 — INPUT WIDTHS: Form inputs have 3 FIXED widths
+   from Figma. They NEVER stretch to fill the container.
+     Default = 280px  (Figma innerType "Standard")
+     Medium  = 160px  (Figma innerType "Medium")
+     Small   = 100px  (Figma innerType "Small")
+
+   STRICT RULE #2 — LABEL WIDTHS: Form labels have ONE default
+   plus THREE rare width variants. The default is used on every
+   real multi-input Form page. The rare variants are used inside
+   a Reports Input Row container (`.reports-input-row`).
+
+     Default  (Form pages)        = 200px  → .form-row__label
+     Rare (edge-case only)    140 = 140px  → .form-row__label--140
+     Rare (edge-case only)    100 = 100px  → .form-row__label--100
+     Rare (edge-case only)     80 =  80px  → .form-row__label--80
+     (Inside a .reports-input-row or .form-row--gap-16, labels HUG
+      content — STRICT RULE #4 below. The rare widths are forbidden
+      there; the cascade auto-overrides them to width:auto.)
+
+   STRICT RULE #3 — REPORTS INPUT ROW SPACING (MANDATORY whenever
+   one OR more inputs sit inside a `.reports-input-row` container
+   on a Reports page):
+
+     • Label → input gap = 16px  (NOT 8px)
+         → .form-row--gap-16  (applied explicitly)
+         → ALSO auto-applied by the descendant rule
+           `.reports-input-row .form-row { gap:16px; }` below, so
+           developers get the correct spacing even if they forget
+           the modifier.
+     • Gap BETWEEN sibling input groups in the row = 24px
+         → set `.reports-input-row { gap: 24px; }` on the container
+         (this is the page-scoped container, not a predefined class).
+     • Buttons (.btn-primary, filter buttons) that live inside the
+       Reports Input Row follow the same 24px sibling gap.
+     • When the row uses a specific LAYOUT TYPE from the
+       "Input Row Layout Assembly" system (e.g. Type 1 for
+       Reports), the Type modifier `.reports-input-row--typeN`
+       overrides the gap to the value captured from Figma
+       (Type 1 = 12px + flex-spacer pattern). See the
+       "INPUT ROW LAYOUT ASSEMBLY — TYPES" block below for the
+       full Type spec.
+
+   STRICT RULE #5 — WHEN AN INPUT IS THE DRAWER TRIGGER, USE `.rpt-textbox`
+   (conditional, narrow-scope rule):
+
+     ⚠️ IMPORTANT SCOPE:
+       A Drawer in Elegant 1.0 can be opened by ANY component —
+       Primary/Secondary/Tertiary buttons, action-bar icon buttons,
+       links, menu items, row-clicks on a table, cards, alerts,
+       etc. An input is just ONE of many possible triggers.
+       This rule does NOT mandate that every drawer be opened by
+       an input, and it does NOT mandate that every input open a
+       drawer.
+
+     ✅ THE RULE IS CONDITIONAL — it only applies in this specific
+     intersection:
+
+        IF  (the trigger is a text-input control)
+        AND (clicking the embedded icon opens a Drawer)
+        THEN the input MUST use the predefined `.rpt-textbox`
+             component.
+
+     In that narrow case (e.g., log-source picker, device picker,
+     user picker, period/date-range picker, filter picker, tag
+     picker, severity picker — anywhere a Reports Input Row or
+     Settings filter uses a textbox-with-icon that launches a
+     drawer), the input MUST be `.rpt-textbox`. Do NOT use
+     `.form-input-icon-wrap--right` and do NOT hand-roll a
+     `<div>` + `<input>` + `<span>` + ad-hoc CSS.
+
+     If the drawer is opened by a BUTTON, ICON-BUTTON, LINK, or
+     any non-input control — this rule does NOT apply. Use the
+     appropriate button / link / menu-item component for that
+     trigger.
+
+     Why `.rpt-textbox` is the canonical pattern (when the rule
+     applies):
+       1. Fixed 26px height + 1px #C4C4C4 border + 2px radius
+          matches Figma Elegant 1.0 exactly — the same geometry
+          used in every Log360 Cloud report and filter.
+       2. The right-edge icon button (`.rpt-textbox__icon-btn`,
+          26×26, #F5F5F5 bg, border-left separator) is a real
+          `<button>` — keyboard-accessible, focus-ringable, and
+          semantically the element that OPENS the drawer.
+       3. Width modifiers: `--wide` 280px | `--medium` 200px |
+          `--small` 160px. Three approved widths, no arbitrary
+          values.
+
+     Canonical markup (applies only to the input-triggers-drawer
+     case):
+       <div class="rpt-textbox rpt-textbox--wide">
+         <input type="text" value="DC-PRIMARY-01, +4 more" />
+         <button class="rpt-textbox__icon-btn"
+                 title="Select — opens drawer"
+                 onclick="openDrawer()">
+           <img src="./assets/icons/icon-input-plus.svg" alt="" />
+         </button>
+       </div>
+
+     Full rule + "wrong vs right" examples + the list of
+     non-input trigger types: see the RPT-TEXTBOX section in
+     `data/Components-Wiki/form_input.md` (STRICT RULE #5).
+
+   STRICT RULE #4 — HUG-CONTENT LABELS IN A 16PX-GAP ROW
+   (MANDATORY whenever `.form-row--gap-16` is applied, OR whenever
+   a `.form-row` is nested inside a `.reports-input-row`):
+
+     • Label width = HUG CONTENT (auto, no fixed basis).
+         → The label sizes itself to its text. No `--140 / --100 /
+           --80` modifier is needed — and if one is present, the
+           cascade below overrides it.
+         → The 24px sibling gap on `.reports-input-row` separates
+           the input groups visually; fixed label widths would add
+           unnecessary horizontal padding.
+     • The rare fixed widths `--140 / --100 / --80` still exist in
+       this stylesheet but are edge-case tools. DO NOT use them
+       inside a Reports Input Row.
+
+   🚨 AUTO-BALANCE RULE (applies to every Form page that has
+      multiple inputs in a stack or row): if ONE label's character
+      count grows or shrinks, ALL labels on that page must adopt
+      the SAME width — equal to the widest label needed. Keeps
+      input left-edges aligned across the entire form. Never mix
+      label widths inside a single Form. Does NOT apply inside a
+      Reports Input Row (those inputs are logically independent
+      and their labels hug content per Strict Rule #4).
+   ============================================================ */
+
+/* ── Form Container ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Save / Cancel Bar ── */
+/* ── Form Footer (Save / Cancel bar) ─────────────────────────────────────
+   Canonical footer for any form. LEFT-aligned flex container — uses the
+   GLOBAL .btn-primary and .btn-tertiary classes from table.css (driven by
+   design tokens). No scoped button overrides here.
+
+   Canonical button order (LEFT → RIGHT):
+     1. .btn-primary    — Save / Apply / Submit (action color)
+     2. .btn-tertiary   — Cancel / Discard    (neutral white + grey border)
+     3. .form-actions__link — Reset          (optional text link, rightmost)
+
+   ZERO TOLERANCE: Never use .btn-secondary (blue border) for Cancel.
+   Cancel is a neutral action, not a secondary "next-step" action.
+   ──────────────────────────────────────────────────────────────────── */
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 16px 16px 16px 0;
+  border-top: 1px solid #E9E9E9;
+  margin-top: 24px;
+}
+.form-actions__link {
+  font-family: var(--font-family);
+  font-size: 12px; color: #006AFF;
+  text-decoration: none; cursor: pointer;
+  margin-left: 4px;
+}
+.form-actions__link:hover { color: #0055D4; text-decoration: underline; }
+
+/* ── Single Form Row (label + input) ── */
+.form-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;              /* default label→input gap */
+  min-height: 26px;
+}
+.form-row--inline {
+  display: inline-flex;
+  width: auto;
+}
+/* 16px label→input gap modifier. Use explicitly inside a Reports
+   Input Row (where it's also auto-applied — see rule below). */
+.form-row--gap-16 { gap: 16px; }
+
+/* ── Reports Input Row — MANDATORY spacing (STRICT RULE #3) ──
+   Every .form-row that lives inside a .reports-input-row container
+   on a Reports page gets 16px label→input gap AUTOMATICALLY. The
+   page-scoped .reports-input-row container must set its OWN gap
+   to 24px so sibling input groups (and buttons) breathe apart.
+   (Type 1 overrides this to 12px — see below.) */
+.reports-input-row .form-row { gap: 16px; }
+
+/* ============================================================
+   INPUT ROW LAYOUT ASSEMBLY — TYPES (captured from Figma
+   "Input Row Layout Assembly" frames in the Elegant 6.0 kit)
+
+   This section defines the canonical LAYOUT patterns a
+   Reports Input Row can take. Each Type is a distinct
+   positioning + spacing recipe on top of the base
+   .reports-input-row container. Use the type modifier
+   that matches the product screenshot.
+
+   Current types:
+     • Type 1 (Reports) — left filters group → FLEX SPACER →
+       right-aligned Period/date input.
+         Full-width horizontal row, 16px top+bottom padding,
+         12px gap between inline items, one right-edge input
+         pushed via `margin-left:auto`.
+         Use for: the default Log360 Reports filter bar
+         (Select Log Source + Filter + Period).
+
+     • Type 2+ — reserved for future layouts (centered, stacked
+       on wrap, full-right, toolbar-style). Add them here as
+       new `.reports-input-row--typeN` modifiers with the same
+       contract: base class stays neutral, the type modifier
+       adds padding/gap/alignment.
+
+   Full spec + future-types scaffold:
+     See `data/Components-Wiki/form_input.md` under
+     "INPUT ROW LAYOUT ASSEMBLY — TYPES".
+   ============================================================ */
+
+/* ── Type 1 (Reports) — left filters + flex-spacer + right-aligned Period ──
+   The Type modifier is self-contained: `display:flex` is set here so pages
+   don't need any page-scoped `.reports-input-row { display:flex }` rule. */
+.reports-input-row--type1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;              /* Figma: Input Row Inner itemSpacing = 12px */
+  padding: 16px 0;        /* 58px total row height (26px content + 16+16) */
+  flex-wrap: nowrap;      /* Figma: single row — stays on ONE line */
+}
+
+/* Optional semantic group wrappers (use when you need to group
+   multiple inputs on one side of the flex spacer). */
+.reports-input-row__group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.reports-input-row__group--right { margin-left: auto; }
+
+/* Shortcut: any direct child can be pushed to the right edge
+   with this class (no inner group wrapper needed). */
+.reports-input-row--type1 > .reports-input-row__right { margin-left: auto; }
+
+
+/* ── Hug-content label (STRICT RULE #4) ───────────────────────
+   Any .form-row__label inside a .form-row--gap-16 OR inside a
+   .reports-input-row hugs its text content (no fixed width).
+   Overrides any --140/--100/--80 rare modifier that may still be
+   present in legacy markup. Paired with STRICT RULE #3, this gives
+   Reports Input Rows a clean, compact layout driven purely by
+   label text + 16px label→input gap + 24px sibling gap. */
+.form-row--gap-16 > .form-row__label,
+.reports-input-row .form-row__label {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+}
+
+/* ── Label Area ── */
+.form-row__label {
+  flex: 0 0 200px;       /* DEFAULT — use on every Form page */
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 26px;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  color: #000;
+  white-space: nowrap;
+}
+/* Rare label-width variants — for inputs in a Reports Input Row
+   container. NEVER mix widths inside a Form page (auto-balance
+   rule — see header comment). Inside a Reports Input Row each
+   input is logically independent so widths may differ per input. */
+.form-row__label--140 { flex-basis: 140px; }
+.form-row__label--100 { flex-basis: 100px; }
+.form-row__label--80  { flex-basis:  80px; }
+
+/* ============================================================
+   CONTAINER-SCOPED LABEL BALANCE — the auto-balance rule in ONE class.
+   ------------------------------------------------------------
+   Instead of decorating every <label> with --100/--140/etc (and risking
+   one row being forgotten → inconsistent widths), set ONE class on the
+   form container (.form-group / .drawer-form / .form-group-inline) and
+   all descendant labels take the same width. This enforces the
+   auto-balance rule structurally.
+
+   Usage:
+     <div class="drawer-form drawer-form--labels-100">...</div>
+     <div class="form-group form-group--labels-140">...</div>
+
+   Widths chosen to cover the common drawer / form cases. Pick the
+   smallest width that fits the WIDEST label in the form. */
+.form-group--labels-80      > .form-row > .form-row__label,
+.drawer-form--labels-80     > .form-row > .form-row__label,
+.form-group-inline--labels-80 .form-row__label { flex-basis: 80px; }
+
+.form-group--labels-100     > .form-row > .form-row__label,
+.drawer-form--labels-100    > .form-row > .form-row__label,
+.form-group-inline--labels-100 .form-row__label { flex-basis: 100px; }
+
+.form-group--labels-120     > .form-row > .form-row__label,
+.drawer-form--labels-120    > .form-row > .form-row__label,
+.form-group-inline--labels-120 .form-row__label { flex-basis: 120px; }
+
+.form-group--labels-140     > .form-row > .form-row__label,
+.drawer-form--labels-140    > .form-row > .form-row__label,
+.form-group-inline--labels-140 .form-row__label { flex-basis: 140px; }
+
+.form-group--labels-160     > .form-row > .form-row__label,
+.drawer-form--labels-160    > .form-row > .form-row__label,
+.form-group-inline--labels-160 .form-row__label { flex-basis: 160px; }
+
+.form-group--labels-200     > .form-row > .form-row__label,
+.drawer-form--labels-200    > .form-row > .form-row__label,
+.form-group-inline--labels-200 .form-row__label { flex-basis: 200px; }
+
+/* Dev warning: if the form container has NO --labels-* modifier and more
+   than one row, outline it in red when <html data-fi-debug> is set —
+   this is the #1 cause of "inconsistent label widths" bugs. */
+html[data-fi-debug] .drawer-form:not([class*="--labels-"]):has(> .form-row ~ .form-row) {
+  outline: 1px dashed #CF2F44;
+}
+.form-row__mandatory {
+  color: #DD1616;
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+/* ── Input Area (right side) — NEVER flex:1 / fill container ──
+   Figma invariant: 280px default, 160px medium, 100px small.
+   If you think you need it wider, the answer is ALMOST ALWAYS to use the
+   sanctioned `.form-row__input--full` modifier (only for true full-bleed
+   cases like drawer forms that explicitly opt in). Do NOT redefine this
+   class inline via <style>, do NOT set flex:1, do NOT hardcode width. */
+.form-row__input {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 280px;
+}
+
+/* ── Fixed Input Widths (from Figma) ── */
+.form-row__input--default { width: 280px; }  /* Figma innerType "Standard"  */
+.form-row__input--medium  { width: 160px; }  /* Figma innerType "Medium"    */
+.form-row__input--small   { width: 100px; }  /* Figma innerType "Small"     */
+
+/* ── Sanctioned escape hatch ── use only when the spec explicitly calls
+   for a full-bleed input (rare; e.g. a comma-separated-values textarea
+   that should hug the drawer body). Still capped so it never overflows. */
+.form-row__input--full {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ── Self-defense: if a developer sets width via inline style (which
+   bypasses this rule), at least clamp the children so the trigger /
+   inputs respect a sensible ceiling. The REAL fix is to remove the
+   inline override and use a width modifier. */
+.form-row__input > .form-dropdown-wrap,
+.form-row__input > .form-dropdown-trigger,
+.form-row__input > .rpt-textbox {
+  max-width: 100%;
+}
+
+/* Dev hint: toggle <html data-fi-debug> to surface any .form-row__input
+   that is wider than 280px (likely an override violation). Off by default. */
+html[data-fi-debug] .form-row__input {
+  outline: 1px dashed transparent;
+}
+html[data-fi-debug] .form-row__input:not(.form-row__input--default):not(.form-row__input--medium):not(.form-row__input--small):not(.form-row__input--full) {
+  outline-color: #CF2F44;
+}
+
+/* ── Shared Input Base ── */
+.form-input {
+  font-family: var(--font-family);
+  font-size: 12px;
+  color: #000;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #DCDCDC;
+  border-radius: 2px;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.form-input::placeholder {
+  color: #939393;
+  font-size: 12px;
+}
+.form-input:hover { border-color: #ABABAB; }
+.form-input:focus { border-color: #2C66DD; }
+.form-input:disabled,
+.form-input[readonly]:not(.form-input--select) {
+  background: #F5F5F5;
+  color: #939393;
+  cursor: not-allowed;
+}
+.form-input--error { border-color: #DD1616 !important; }
+
+/* ── Type: Standard Text ── */
+.form-input--text { /* inherits base */ }
+
+/* ── Type: Description / Textarea ── */
+.form-input--textarea {
+  height: 68px;
+  padding: 6px 8px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ── Type: Select / Dropdown (Custom — NEVER native <select>) ──
+   Matches Figma "Textbox without Label" → Input Types = true.
+   STRUCTURE (from Figma node inspection):
+     .form-dropdown-trigger  (flex wrapper = outer border box)
+       ├── input.form-input.form-input--select  (text zone, no border)
+       └── .form-dropdown-trigger__icon  (26×26 chevron box, #F5F5F5 bg)
+             └── img icon-dropdown-chevron.svg (14×14)
+
+   Figma specs for the TRIGGER (outer "Frame 5"):
+     280×26, bg #FFF, 1px #C4C4C4 stroke INSIDE, corner-radius 2px,
+     padding: 12px left, 0 right, 3px top/bottom, horizontal auto-layout.
+
+   Figma specs for the CHEVRON ZONE ("Input Type" instance):
+     26×26, bg #F5F5F5, 1px #C4C4C4 stroke INSIDE,
+     corner-radius: 0 top-right:2 0 bottom-right:2 (only RIGHT corners),
+     padding 6px all sides, centres a 14×14 chevron icon.
+     The left stroke of this box acts as the visual divider between
+     the text zone and the chevron zone.
+
+   PLACEHOLDER RULE (ZERO TOLERANCE):
+     "- Select -" is PLACEHOLDER text, NEVER a dropdown list item.
+     Use <input ... placeholder="- Select -"> (no value attr). Placeholder
+     text renders in #939393 automatically via ::placeholder below.
+   ALWAYS pair with form-dropdown panel + 4px gap (form-dropdown.css). */
+
+/* Trigger wrapper — the outer border box */
+.form-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 26px;
+  background: #fff;
+  border: 1px solid #C4C4C4;
+  border-radius: 2px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  overflow: hidden;
+}
+.form-dropdown-trigger:hover { border-color: #ABABAB; }
+
+/* When dropdown is open, blue focus ring */
+.form-dropdown-wrap:has(.form-dropdown--open) .form-dropdown-trigger {
+  border-color: #2C66DD;
+}
+
+/* Input inside trigger — borderless, fills remaining space */
+.form-input--select {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none !important;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 0 0 12px;
+  cursor: pointer;
+  user-select: none;
+  caret-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-input--select:hover,
+.form-input--select:focus { border-color: transparent !important; box-shadow: none; }
+.form-input--select[readonly] {
+  background: transparent;
+  color: #000;
+  cursor: pointer;
+}
+.form-input--select::placeholder { color: #939393; opacity: 1; }
+.form-input--select::-webkit-input-placeholder { color: #939393; }
+.form-input--select::-moz-placeholder { color: #939393; opacity: 1; }
+
+/* Chevron zone — the separate 26×26 box from Figma "Input Type" instance */
+.form-dropdown-trigger__icon {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F5F5;
+  border-left: 1px solid #C4C4C4;
+  border-radius: 0 2px 2px 0;
+  box-sizing: border-box;
+}
+.form-dropdown-trigger__icon img,
+.form-dropdown-trigger__icon svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+/* Compact variant — pagination page-size pickers, action-bar filters.
+   Smaller footprint (22px height, ~52–80px wide), no separate bg zone,
+   just a chevron icon at the right edge. */
+.form-dropdown-trigger--compact {
+  height: 22px;
+}
+.form-dropdown-trigger--compact .form-input--select {
+  padding-left: 8px;
+  font-size: 11px;
+}
+.form-dropdown-trigger--compact .form-dropdown-trigger__icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 22px;
+  background: transparent;
+  border-left: none;
+  border-radius: 0;
+}
+.form-dropdown-trigger--compact .form-dropdown-trigger__icon img,
+.form-dropdown-trigger--compact .form-dropdown-trigger__icon svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* ── Type: Standard with Front Icon ── */
+.form-input-icon-wrap {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  border: 1px solid #DCDCDC;
+  border-radius: 2px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.form-input-icon-wrap:hover { border-color: #ABABAB; }
+.form-input-icon-wrap:focus-within { border-color: #2C66DD; }
+.form-input-icon-wrap__icon {
+  flex: 0 0 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+}
+.form-input-icon-wrap__icon img,
+.form-input-icon-wrap__icon svg { width: 14px; height: 14px; }
+.form-input-icon-wrap .form-input {
+  border: none;
+  height: 24px;
+  flex: 1;
+}
+.form-input-icon-wrap .form-input:focus { box-shadow: none; }
+
+/* Icon on right side */
+.form-input-icon-wrap--right { flex-direction: row; }
+.form-input-icon-wrap--right .form-input-icon-wrap__icon { order: 2; }
+.form-input-icon-wrap--right .form-input { order: 1; }
+
+/* Plus icon (clickable — opens tab) */
+.form-input-icon-wrap__plus { cursor: pointer; }
+.form-input-icon-wrap__plus:hover { background: #F5F5F5; border-radius: 2px; }
+
+/* Icon on left side */
+.form-input-icon-wrap--left .form-input-icon-wrap__icon { order: 1; }
+.form-input-icon-wrap--left .form-input { order: 2; }
+
+/* ── Type: Radio Group ── */
+.form-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 26px;
+}
+.form-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 12px;
+  color: #000;
+}
+.form-radio__input { display: none; }
+.form-radio__icon {
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+}
+.form-radio__icon--checked { display: none; }
+.form-radio__icon--unchecked { display: block; }
+.form-radio__input:checked ~ .form-radio__icon--checked { display: block; }
+.form-radio__input:checked ~ .form-radio__icon--unchecked { display: none; }
+.form-radio__info {
+  width: 14px; height: 14px;
+  margin-left: 4px;
+  cursor: help;
+}
+
+/* ── Type: Password ── */
+.form-input-password {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  border: 1px solid #DCDCDC;
+  border-radius: 2px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.form-input-password:hover { border-color: #ABABAB; }
+.form-input-password:focus-within { border-color: #2C66DD; }
+.form-input-password .form-input {
+  border: none; height: 24px; flex: 1;
+}
+.form-input-password__toggle {
+  flex: 0 0 26px;
+  display: flex; align-items: center; justify-content: center;
+  height: 26px; cursor: pointer; background: none; border: none; padding: 0;
+}
+.form-input-password__toggle img,
+.form-input-password__toggle svg { width: 14px; height: 14px; }
+
+/* ── Type: Number (with up/down arrows) ── */
+.form-input-number {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  border: 1px solid #DCDCDC;
+  border-radius: 2px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.form-input-number:hover { border-color: #ABABAB; }
+.form-input-number:focus-within { border-color: #2C66DD; }
+.form-input-number .form-input {
+  border: none; height: 24px; flex: 1;
+  text-align: center; -moz-appearance: textfield;
+}
+.form-input-number .form-input::-webkit-inner-spin-button,
+.form-input-number .form-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.form-input-number__arrows {
+  display: flex; flex-direction: column;
+  flex: 0 0 20px; height: 26px;
+  border-left: 1px solid #DCDCDC;
+}
+.form-input-number__btn {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: none; border: none; padding: 0;
+}
+.form-input-number__btn:hover { background: #F5F5F5; }
+.form-input-number__btn img,
+.form-input-number__btn svg { width: 8px; height: 5px; }
+.form-input-number__arrows .form-input-number__btn + .form-input-number__btn {
+  border-top: 1px solid #DCDCDC;
+}
+
+/* ── Type: Port (protocol + host + port) ── */
+.form-input-port {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  gap: 0;
+}
+.form-input-port__prefix {
+  flex: 0 0 auto;
+  height: 26px; padding: 0 8px;
+  display: flex; align-items: center;
+  font-family: var(--font-family); font-size: 12px; color: #626262;
+  background: #F5F5F5;
+  border: 1px solid #DCDCDC;
+  border-right: none; border-radius: 2px 0 0 2px;
+  white-space: nowrap;
+}
+.form-input-port .form-input {
+  border-radius: 0; flex: 1 1 0; min-width: 0;
+}
+.form-input-port__suffix {
+  flex: 0 0 auto;
+  height: 26px; padding: 0 8px;
+  display: flex; align-items: center;
+  font-family: var(--font-family); font-size: 12px; color: #626262;
+  background: #F5F5F5;
+  border: 1px solid #DCDCDC;
+  border-left: none; border-radius: 0 2px 2px 0;
+  white-space: nowrap;
+}
+
+/* ── Type: Frequency ── */
+.form-input-frequency {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  flex-wrap: nowrap;
+}
+.form-input-frequency .form-dropdown-trigger {
+  width: auto; min-width: 80px; flex: 0 0 auto;
+}
+.form-input-frequency__sep {
+  font-family: var(--font-family);
+  font-size: 12px; color: #626262;
+  white-space: nowrap;
+}
+/* ── Type: Dropdown with icon ── */
+.form-input--icon-dropdown {
+  padding-left: 28px;
+  background-image: url('../assets/icons/icon-chevron-down.svg');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+}
+
+/* ── Type: Tags ── */
+.form-input-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 26px;
+  padding: 3px 8px;
+  border: 1px solid #DCDCDC;
+  border-radius: 2px;
+  background: #fff;
+  cursor: text;
+  transition: border-color 0.15s;
+}
+.form-input-tags:hover { border-color: #ABABAB; }
+.form-input-tags:focus-within { border-color: #2C66DD; }
+.form-input-tags__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  background: #E8F0FE;
+  border-radius: 2px;
+  font-family: var(--font-family);
+  font-size: 11px; color: #2C66DD;
+  white-space: nowrap;
+}
+.form-input-tags__tag-remove {
+  width: 10px; height: 10px;
+  cursor: pointer; opacity: 0.7;
+}
+.form-input-tags__tag-remove:hover { opacity: 1; }
+.form-input-tags__input {
+  flex: 1; min-width: 60px;
+  border: none; outline: none;
+  font-family: var(--font-family);
+  font-size: 12px; color: #000;
+  background: transparent;
+  height: 20px;
+}
+.form-input-tags__input::placeholder { color: #939393; }
+
+/* ── Type: File Upload ── */
+.form-input-upload {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 26px;
+}
+.form-input-upload .form-input {
+  border-radius: 2px 0 0 2px;
+  flex: 1 1 0;
+  min-width: 0;
+  color: #939393;
+}
+.form-input-upload__btn {
+  flex: 0 0 auto;
+  height: 26px; padding: 0 12px;
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--font-family);
+  font-size: 12px; color: #000;
+  background: #F5F5F5;
+  border: 1px solid #DCDCDC;
+  border-left: none; border-radius: 0 2px 2px 0;
+  cursor: pointer; white-space: nowrap;
+}
+.form-input-upload__btn:hover { background: #EDEDED; }
+.form-input-upload__btn img,
+.form-input-upload__btn svg { width: 14px; height: 14px; }
+
+/* ── Type: Date/Time (Calendar) ── */
+.form-input-calendar {
+  position: relative;
+}
+.form-input-calendar .form-input {
+  padding-right: 28px;
+}
+.form-input-calendar__icon {
+  position: absolute;
+  right: 8px; top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  pointer-events: none;
+}
+
+/* ── Type: Checkbox (with label) ── */
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 12px; color: #000;
+}
+.form-checkbox__input { display: none; }
+.form-checkbox__icon { width: 16px; height: 16px; flex: 0 0 16px; }
+.form-checkbox__icon--checked { display: none; }
+.form-checkbox__icon--unchecked { display: block; }
+.form-checkbox__input:checked ~ .form-checkbox__icon--checked { display: block; }
+.form-checkbox__input:checked ~ .form-checkbox__icon--unchecked { display: none; }
+
+/* ── Description Helper ── */
+.form-row__desc {
+  font-family: var(--font-family);
+  font-size: 11px;
+  color: #939393;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* ── Composite wrappers inherit parent width ── */
+.form-input-icon-wrap,
+.form-input-password,
+.form-input-number,
+.form-input-port,
+.form-input-upload,
+.form-input-calendar,
+.form-input-tags {
+  width: 100%;
+}
+
+/* Override number spinner to its natural compact width */
+.form-input-number { max-width: 100px; width: auto; }
+.form-input-frequency .form-input-number { max-width: 70px; }
+
+/* ── Input States ── */
+.form-input--hover { border-color: #ABABAB; }
+.form-input--focus { border-color: #2C66DD; }
+.form-input--disabled { background: #F5F5F5; color: #939393; cursor: not-allowed; }
+.form-input--readonly { background: #F5F5F5; color: #626262; }
+.form-input--error { border-color: #DD1616; }
+.form-error-text {
+  font-family: var(--font-family);
+  font-size: 11px; color: #DD1616;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   RPT-TEXTBOX — Input-as-Drawer-Trigger Component (STRICT RULE #5)
+   ──────────────────────────────────────────────────────────────
+   Canonical pattern for the SPECIFIC case where an INPUT control
+   is used to trigger a Drawer (the icon inside the textbox opens
+   a drawer — log-source picker, device picker, user picker,
+   period picker, filter picker, tag picker, severity picker,
+   etc.).
+
+   SCOPE REMINDER: Drawers can be opened by many components —
+   buttons, icon-buttons, links, menu items, cards, row-clicks,
+   etc. This component is NOT mandatory for those other triggers.
+   It IS mandatory only in the narrow intersection:
+     (trigger is an input) AND (icon opens a drawer).
+
+   In that case: never substitute `.form-input-icon-wrap` or a
+   hand-rolled wrapper. Always use this component. See rule #5
+   in the header comment for full scope + rationale.
+
+   Structure:
+     <div class="rpt-textbox rpt-textbox--wide">    [280px | 200px | 160px]
+       <input type="text" value="…"/>
+       <button class="rpt-textbox__icon-btn" onclick="openDrawer()">
+         <img src="./assets/icons/icon-input-plus.svg"/>
+       </button>
+     </div>
+
+   Extracted from: elegant-agent/data/reference/Log360_cloud_demo.html
+   (lines 50-54 CSS, 1647-1656 markup).
+   ============================================================ */
+.rpt-textbox {
+  height: 26px;
+  border: 1px solid #C4C4C4;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: var(--font-family);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+/* Width variants — pick one per input */
+.rpt-textbox--wide   { width: 280px; }   /* default / log-source / period */
+.rpt-textbox--medium { width: 200px; }   /* compact filter */
+.rpt-textbox--small  { width: 160px; }   /* inline filter */
+
+.rpt-textbox input {
+  border: none;
+  outline: none;
+  font-size: 12px;
+  font-family: var(--font-family);
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  padding: 3px 0 3px 12px;
+  height: 100%;
+  color: #000;
+}
+.rpt-textbox input::placeholder { color: #939393; }
+
+.rpt-textbox__icon-btn {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F5F5;
+  border: none;
+  border-left: 1px solid #C4C4C4;
+  cursor: pointer;
+  padding: 0;
+}
+.rpt-textbox__icon-btn:hover { background: #EBEBEB; }
+.rpt-textbox__icon-btn:focus-visible {
+  outline: 2px solid #2C66DD;
+  outline-offset: -2px;
+}
+.rpt-textbox__icon-btn img,
+.rpt-textbox__icon-btn svg { width: 14px; height: 14px; }
+
+/* States */
+.rpt-textbox--focus { border-color: #2C66DD; }
+.rpt-textbox--disabled { background: #F5F5F5; }
+.rpt-textbox--disabled input { color: #939393; cursor: not-allowed; }
+.rpt-textbox--disabled .rpt-textbox__icon-btn { cursor: not-allowed; opacity: .6; }
+.rpt-textbox--error { border-color: #DD1616; }
+
+/* Responsive: full width on narrow screens (≤768px) */
+@media (max-width: 768px) {
+  .rpt-textbox,
+  .rpt-textbox--wide,
+  .rpt-textbox--medium,
+  .rpt-textbox--small { width: 100%; }
+}

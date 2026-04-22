@@ -1,0 +1,26 @@
+<!--
+  Elegant Predefined Widget: Summary Chart (KPI tiles + multi-series chart)
+  Usage: Dashboard overview widget with stat tiles above a chart
+-->
+<div class="sw-widget" id="summary-chart-1"></div>
+<script>
+ElegantEChart.summaryChartWidget('summary-chart-1', {
+  tiles: [
+    { value: '10000', trend: '20%', label: 'All Alerts' },
+    { value: '8000',  trend: '20%', label: 'Active Alerts' },
+    { value: '2500',  trend: '20%', label: 'SLA Violated Alerts', icon: 'icon-alert-schedule.svg' },
+    { value: '2000',  trend: '20%', label: 'Closed Alerts' }
+  ],
+  chart: {
+    yAxisName: 'Alerts Count',
+    labels: ['Nov 01','Nov 02','Nov 03','Nov 04','Nov 05','Nov 06','Nov 07',
+             'Nov 08','Nov 09','Nov 10','Nov 11','Nov 12','Nov 13','Nov 14'],
+    colors: ['#E91F1F', '#FF8E36', '#FFC600'],
+    datasets: [
+      { label: 'Critical',  color: '#E91F1F', values: [120,150,130,140,160,180,200,350,500,800,650,300,250,500] },
+      { label: 'Trouble',   color: '#FF8E36', values: [180,200,220,210,230,250,280,450,300,200,250,300,350,400] },
+      { label: 'Attention', color: '#FFC600', values: [100,120,110,130,140,160,180,120,100,100,120,130,150,180] }
+    ]
+  }
+});
+</script>

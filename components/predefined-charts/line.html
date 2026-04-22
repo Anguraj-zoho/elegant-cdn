@@ -1,0 +1,14 @@
+<!--
+  Elegant Predefined Chart: Line / Area
+  Usage: Trends over time. Set fill:true for area fill.
+-->
+<div class="card__chart" id="chart-line-1" style="width:100%;min-height:280px;"></div>
+<script>
+ElegantEChart.line('chart-line-1', {
+  labels: ['00:00','04:00','08:00','12:00','16:00','20:00','24:00'],
+  datasets: [
+    { label: 'Inbound',  values: [120,95,340,580,620,410,180], color: '#2C66DD', fill: true },
+    { label: 'Outbound', values: [80,60,210,390,450,310,140],  color: '#009CBB', fill: true }
+  ]
+});
+</script>

@@ -1,0 +1,11 @@
+<!--
+  Elegant Predefined Chart: Waterfall
+  Usage: Cumulative change analysis (alerts added vs resolved)
+-->
+<div class="card__chart" id="chart-waterfall-1" style="width:100%;min-height:280px;"></div>
+<script>
+ElegantEChart.waterfall('chart-waterfall-1', {
+  labels: ['Jan','New Alerts','Auto-Closed','Escalated','Manual Fix','Mar','Apr','Spike','Resolved','Jun Total'],
+  values: [120, 85, -45, 30, -60, 130, 140, 110, -95, 105]
+});
+</script>

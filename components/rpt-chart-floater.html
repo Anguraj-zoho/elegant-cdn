@@ -1,0 +1,68 @@
+<!--
+  ============================================================
+  RPT-CHART-FLOATER — Predefined HTML Component
+  Report-page chart floating control (pill with 2 icon-buttons)
+  ============================================================
+
+  SCOPE
+    MANDATORY for Log360 Cloud report pages.
+    REPLACES the deprecated `.rpt-chart-toggle` (Chart View /
+    Grid View segmented control).
+
+  PAIR WITH
+    elegant-agent/data/components/rpt-chart-floater.css
+    elegant-agent/data/components/rpt-chart-floater.js
+    drawer.css + drawer.js (for the Customize View drawer)
+
+  DEFAULT SLOTS
+    Button 1: Customize view  → opens drawer (data-drawer-open="customizeViewDrawer")
+    Button 2: Chart-view toggle (chart ↔ grid) → rpt-chart-floater.js
+
+  MINIMUM HOST
+    <div class="rpt-chart-area"> must be position:relative (the
+    .rpt-chart-area class already supplies that). Place the
+    floater as the first child — the chart canvas follows.
+
+  DO NOT
+    * Don't place outside a report page (use other toolbars instead).
+    * Don't add >3 buttons (keep the pill compact — if you need more
+      actions, use an ActionBar or a drawer).
+    * Don't replace this with a custom floating control.
+-->
+
+<!-- ── Canonical usage ── -->
+<div class="rpt-chart-area">
+
+  <div class="rpt-chart-floater" role="toolbar" aria-label="Chart tools">
+    <!-- Left: Customize View → opens drawer -->
+    <button class="rpt-chart-floater__btn"
+            type="button"
+            data-drawer-open="customizeViewDrawer"
+            title="Customize View"
+            aria-label="Customize View">
+      <!-- Horizontal sliders / equalizer icon (3 bars with knobs) -->
+      <svg viewBox="0 0 14 14" aria-hidden="true">
+        <path d="M1 3.5H5M9 3.5H13M1 7H8M11 7H13M1 10.5H4M7 10.5H13"/>
+        <circle cx="7" cy="3.5" r="1.5"/><circle cx="9.5" cy="7" r="1.5"/><circle cx="5.5" cy="10.5" r="1.5"/>
+      </svg>
+    </button>
+
+    <div class="rpt-chart-floater__divider" aria-hidden="true"></div>
+
+    <!-- Right: Chart ↔ Grid view toggle -->
+    <button class="rpt-chart-floater__btn rpt-chart-floater__btn--toggle"
+            type="button"
+            title="Chart View"
+            aria-label="Toggle Chart / Grid View"
+            aria-pressed="true"
+            data-view="chart">
+      <!-- Bar chart icon (3 vertical bars on baseline) -->
+      <svg viewBox="0 0 14 14" aria-hidden="true">
+        <path d="M1 13H13M3.5 13V8M7 13V4M10.5 13V6.5"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Chart canvas host (ECharts / SVG / canvas). Report-page code fills this. -->
+  <div class="rpt-chart" id="reportChart"></div>
+</div>

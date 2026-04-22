@@ -1,0 +1,242 @@
+<!--
+  ============================================================
+  TILE WIDGETS — Complete Predefined Block
+  ============================================================
+  
+  HOW TO USE:
+  1. Copy the assets/ and components/ folders to your project
+  2. Load echarts-widget.js in your HTML (it auto-injects echarts-widget.css)
+  3. Create the grid wrapper: div.tile-grid > div.tile-card > div#tile-N
+  4. Call ElegantEChart.tileWidget('tile-N', data, {type: N})
+  
+  REQUIRED SCRIPTS (load in this order):
+    <script src="components/lib/echarts.min.js"></script>
+    <script src="components/echarts-elegant-theme.js"></script>
+    <script src="components/echarts-widget.js"></script>
+  
+  REQUIRED ICONS (loaded by JS from assets/icons/):
+    icon-metric-trend-up.svg, icon-tile-sev-critical.svg,
+    icon-tile-sev-trouble.svg, icon-tile-sev-attention.svg,
+    icon-alert-schedule.svg, icon-alert-hourglass.svg,
+    icon-tile-muted.svg, icon-metric-clock.svg,
+    icon-summary-bell.svg, icon-alert-warning.svg,
+    icon-status-success.svg, icon-status-waiting.svg
+  
+  GRID CSS (already in echarts-widget.css):
+    .tile-grid — grid container (default 2 columns, override to 3 for dashboards)
+    .tile-card — white card with border/radius/padding
+    .tile-card--wide — spans 2 columns
+  
+  OVERRIDE FOR 3-COLUMN DASHBOARD:
+    .tile-grid { grid-template-columns: repeat(3, 1fr); }
+
+  ALL TILE TYPES BELOW — 10 types covering every dashboard KPI pattern.
+  The second screenshot reference (Alert dashboard) uses Types 1, 6, 4, 5, 8, 9, 10.
+  ============================================================
+-->
+
+<!-- ═══ GRID WRAPPER ═══ -->
+<div class="tile-grid" style="grid-template-columns: repeat(3, 1fr);">
+
+  <!-- ═══ TYPE 1 — Active Alerts (WIDE: severity + SLA + sparkline) ═══ -->
+  <div class="tile-card tile-card--wide">
+    <div class="card__header">
+      <span class="card__title">Active Alerts</span>
+      <div class="card__toolbar">
+        <img src="assets/icons/icon-widget-maximize.svg" alt="" style="width:14px;height:14px;cursor:pointer;">
+      </div>
+    </div>
+    <div id="tile-1"></div>
+  </div>
+
+  <!-- ═══ TYPE 6 — Total Count + Sparkline (HALF) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">Total Events</span>
+    </div>
+    <div id="tile-6"></div>
+  </div>
+
+  <!-- ═══ TYPE 2 — Priority Score Bars (WIDE) ═══ -->
+  <div class="tile-card tile-card--wide">
+    <div class="card__header">
+      <span class="card__title">Priority Score</span>
+    </div>
+    <div id="tile-2"></div>
+  </div>
+
+  <!-- ═══ TYPE 3 — Incident Columns (WIDE: value + spark + severity columns) ═══ -->
+  <div class="tile-card tile-card--wide">
+    <div class="card__header">
+      <span class="card__title">Active Incidents</span>
+    </div>
+    <div id="tile-3"></div>
+  </div>
+
+  <!-- ═══ TYPE 4 — Duration (HALF: hrs min + clock icon) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">MTTR</span>
+    </div>
+    <div id="tile-4"></div>
+  </div>
+
+  <!-- ═══ TYPE 5 — SLA Violated + Segments (HALF) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">SLA Violated</span>
+    </div>
+    <div id="tile-5"></div>
+  </div>
+
+  <!-- ═══ TYPE 7 — MTTI Duration + Sparkline (HALF) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">MTTI</span>
+    </div>
+    <div id="tile-7"></div>
+  </div>
+
+  <!-- ═══ TYPE 8 — Progress + Severity (HALF) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">Investigations Running</span>
+    </div>
+    <div id="tile-8"></div>
+  </div>
+
+  <!-- ═══ TYPE 9 — Donut Ring + Status Cards (HALF) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">Created Incidents</span>
+    </div>
+    <div id="tile-9"></div>
+  </div>
+
+  <!-- ═══ TYPE 10 — Mini Donut + Legend (HALF) ═══ -->
+  <div class="tile-card">
+    <div class="card__header">
+      <span class="card__title">All Activities</span>
+    </div>
+    <div id="tile-10"></div>
+  </div>
+
+</div>
+
+<!-- ═══ INITIALIZATION ═══ -->
+<script>
+// Type 1 — Active Alerts (wide tile with severity breakdown, SLA, sparkline)
+ElegantEChart.tileWidget('tile-1', {
+  value: '10,000',
+  trend: '+7.1%',
+  severity: [
+    { sev: 'critical', value: 640 },
+    { sev: 'trouble', value: 220 },
+    { sev: 'attention', value: 68 }
+  ],
+  slaViolated: 25,
+  mutedAlerts: 25
+}, { type: 1 });
+
+// Type 2 — Priority Score (wide bar segments)
+ElegantEChart.tileWidget('tile-2', {
+  bars: [
+    { value: 100, label: 'Extra High', range: '86-100', color: '#DD1616', dotColor: '#DD1616', flex: 1 },
+    { value: 80,  label: 'High',       range: '71-85',  color: '#D14900', dotColor: '#D14900', flex: 2 },
+    { value: 50,  label: 'Medium',     range: '36-70',  color: '#FABB34', dotColor: '#FABB34', flex: 3 },
+    { value: 30,  label: 'Low',        range: '21-35',  color: '#198019', dotColor: '#198019', flex: 1 },
+    { value: 50,  label: 'Extra Low',  range: '0-20',   color: '#4A90D9', dotColor: '#4A90D9', flex: 1 }
+  ]
+}, { type: 2 });
+
+// Type 3 — Active Incidents (wide: value + spark + severity columns)
+ElegantEChart.tileWidget('tile-3', {
+  value: 5612,
+  trend: '+19.5%',
+  columns: [
+    { label: 'Decisive',      value: 5498, sev: 'critical', color: '#DD1616' },
+    { label: 'Failed',        value: 78,   sev: 'trouble',  color: '#D14900' },
+    { label: 'Fired but',     value: 36,   sev: 'attention', color: '#FABB34' }
+  ]
+}, { type: 3 });
+
+// Type 4 — MTTR Duration
+ElegantEChart.tileWidget('tile-4', {
+  parts: [
+    { value: 4, unit: 'hrs' },
+    { value: 22, unit: 'min' }
+  ]
+}, { type: 4 });
+
+// Type 5 — SLA Violated + Segments
+ElegantEChart.tileWidget('tile-5', {
+  value: 342,
+  segments: [
+    { flex: 45, color: '#DD1616' },
+    { flex: 30, color: '#D14900' },
+    { flex: 25, color: '#FABB34' }
+  ]
+}, { type: 5 });
+
+// Type 6 — Total Count + Sparkline
+ElegantEChart.tileWidget('tile-6', {
+  value: '12,847',
+  trend: '+14.6%',
+  sparkColor: '#2C66DD'
+}, { type: 6 });
+
+// Type 7 — MTTI Duration + Sparkline
+ElegantEChart.tileWidget('tile-7', {
+  parts: [
+    { value: 3, unit: 'hrs' },
+    { value: 47, unit: 'min' }
+  ],
+  trend: '-8.2%',
+  trendColor: '#198019',
+  subtitle: 'Mean Time to Investigate',
+  sparkColor: '#198019'
+}, { type: 7 });
+
+// Type 8 — Progress + Severity
+ElegantEChart.tileWidget('tile-8', {
+  value: 892,
+  trend: '+5.1%',
+  trendColor: '#198019',
+  icon: 'icon-tile-zia.svg',
+  progress: { label: 'AI Confidence', pct: '94.5%' },
+  severity: [
+    { sev: 'critical', value: 234 },
+    { sev: 'trouble', value: 412 },
+    { sev: 'attention', value: 246 }
+  ]
+}, { type: 8 });
+
+// Type 9 — Donut Ring + Status Cards
+ElegantEChart.tileWidget('tile-9', {
+  value: 342,
+  trend: '+5.1%',
+  trendColor: '#198019',
+  ringPct: 78,
+  subtitle: 'Created Incidents',
+  cards: [
+    { label: 'Auto', value: 267, icon: 'icon-status-success.svg' },
+    { label: 'Manual', value: 75, icon: 'icon-status-waiting.svg' }
+  ]
+}, { type: 9 });
+
+// Type 10 — Mini Donut + Legend
+ElegantEChart.tileWidget('tile-10', {
+  value: 892,
+  change: '+15.3%',
+  donut: [
+    { pct: 45, color: '#2C66DD' },
+    { pct: 30, color: '#009CBB' },
+    { pct: 25, color: '#FABB34' }
+  ],
+  legend: [
+    { label: 'Network', value: 401, color: '#2C66DD' },
+    { label: 'Cloud', value: 268, color: '#009CBB' },
+    { label: 'Endpoint', value: 223, color: '#FABB34' }
+  ]
+}, { type: 10 });
+</script>

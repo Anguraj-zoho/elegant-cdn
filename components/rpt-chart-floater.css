@@ -1,0 +1,128 @@
+/* ============================================================
+   RPT-CHART-FLOATER — Predefined CSS Component
+   Report-page chart floating control
+   ------------------------------------------------------------
+   WHAT IT IS
+     A compact pill-shaped floating bar that docks to the
+     top-right of a report-page chart area. It holds exactly
+     two icon-buttons separated by a 1px vertical divider:
+       [ ⚙ Customize ]  │  [ 📊 Chart-view toggle ]
+
+     This REPLACES the legacy `.rpt-chart-toggle` segmented
+     control (Chart View / Grid View) used in earlier Elegant
+     report pages. The legacy toggle is BANNED in new work.
+
+   WHERE TO USE IT
+     ONLY on Log360 Cloud report pages (ASSEMBLY TYPE C / D
+     — the pattern where a Classic Tab wraps a chart and a
+     data table sits outside).
+     NEVER on settings, dashboard, or threat-hub pages.
+
+   HOST CONTEXT
+     Place inside the Classic Tab content area, OR directly
+     inside `.rpt-chart-area` when no Classic Tab is used.
+     The host must be `position:relative` so the floater can
+     dock absolute top-right.
+
+   CANONICAL STRUCTURE
+     <div class="rpt-chart-area">
+       <div class="rpt-chart-floater" role="toolbar">
+         <button class="rpt-chart-floater__btn" data-drawer-open="customizeViewDrawer"
+                 title="Customize view">…SVG…</button>
+         <div class="rpt-chart-floater__divider" aria-hidden="true"></div>
+         <button class="rpt-chart-floater__btn rpt-chart-floater__btn--toggle"
+                 title="Chart view" aria-pressed="true">…SVG…</button>
+       </div>
+       <div class="rpt-chart" id="…"></div>
+     </div>
+
+   BEHAVIOUR
+     * First button: opens a drawer via data-drawer-open (usually
+       "customizeViewDrawer"). ElegantDrawer (drawer.js) wires
+       this automatically.
+     * Second button: toggles chart↔grid view. rpt-chart-floater.js
+       flips aria-pressed and dispatches a 'rpt-chart-view:toggle'
+       CustomEvent for page-level chart renderers to listen to.
+
+   SIZING (Figma — pill micro-toolbar)
+     * Height 24px, padding 0 (icons control their own hit-area)
+     * Icon button 28x24, 14x14 SVG centred, stroke=currentColor
+     * Divider 1px × 16px, #DCDCDC
+     * Corner radius 3px
+     * Background #FFFFFF, 1px border #DCDCDC
+     * Shadow 0 1px 2px rgba(0,0,0,0.04)
+     * Default color #626262; hover #2C66DD, active #2C66DD
+   ============================================================ */
+
+.rpt-chart-area {
+  position: relative;
+}
+
+.rpt-chart-floater {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: stretch;
+  height: 24px;
+
+  background: #FFFFFF;
+  border: 1px solid #DCDCDC;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  font-family: var(--font-family, 'Zoho Puvi', sans-serif);
+  color: #626262;
+}
+
+.rpt-chart-floater__btn {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  width: 28px;
+  padding: 0;
+
+  cursor: pointer;
+  color: inherit;
+  background: transparent;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rpt-chart-floater__btn:hover {
+  background: #F0F6FF;
+  color: #2C66DD;
+}
+.rpt-chart-floater__btn:focus-visible {
+  outline: 2px solid #2C66DD;
+  outline-offset: -2px;
+}
+.rpt-chart-floater__btn[aria-pressed="true"] {
+  color: #2C66DD;
+}
+
+.rpt-chart-floater__btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+
+.rpt-chart-floater__divider {
+  width: 1px;
+  align-self: center;
+  height: 16px;
+  background: #DCDCDC;
+}
+
+/* ── Optional: a 3rd+ button (rare). Keep pill consistent. ── */
+.rpt-chart-floater__btn + .rpt-chart-floater__divider + .rpt-chart-floater__btn { /* no-op guard */ }

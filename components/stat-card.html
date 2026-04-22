@@ -1,0 +1,312 @@
+<!-- ============================================================
+     STAT CARD / TILE WIDGET — Predefined HTML Templates
+     10 types of dashboard KPI tiles rendered by ElegantEChart.tileWidget()
+     ════════════════════════════════════════════════════════════
+
+     USAGE:
+       <div class="tile-card tile-card--wide">                    ← wide types 1-3
+         <div class="card__header"><span class="card__title">Title</span></div>
+         <div id="my-tile"></div>
+       </div>
+       <script>
+         ElegantEChart.tileWidget('my-tile', { ...data }, { type: N });
+       </script>
+
+     CSS: echarts-widget.css (auto-injected by echarts-widget.js)
+     JS:  echarts-widget.js → ElegantEChart.tileWidget()
+
+     CONTAINER CLASSES:
+       .tile-card              — base card (half-width: Types 4-10)
+       .tile-card--wide        — full-width card (wide: Types 1-3)
+
+     GRID:
+       .tile-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+       Wide cards span 2 columns via .tile-card--wide { grid-column: span 2; }
+
+     ICONS (all in assets/icons/):
+       icon-tile-sev-critical.svg  — red hexagon (severity critical)
+       icon-tile-sev-trouble.svg   — orange diamond (severity trouble/high)
+       icon-tile-sev-attention.svg — yellow triangle (severity attention/warning)
+       icon-metric-trend-up.svg    — trend arrow (flip scaleY(-1) for down)
+       icon-metric-clock.svg       — clock face for MTTR
+       icon-alert-hourglass.svg    — hourglass for SLA
+       icon-alert-schedule.svg     — calendar for SLA
+       icon-summary-bell.svg       — notification bell
+       icon-tile-muted.svg         — muted/silenced icon
+       icon-tile-zia.svg           — AI/Zia icon
+       icon-alert-info.svg         — info circle
+       icon-alert-success.svg      — success checkmark
+     ============================================================ -->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 1: Active Alerts
+     Layout: WIDE | 3-zone: value+spark, severity icons, meta row
+     Use for: Primary alert summary tile with severity breakdown
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-1', {
+  value: '10000',
+  trend: '20%',
+  severity: [
+    { sev: 'critical', value: '560' },
+    { sev: 'trouble', value: '220' },
+    { sev: 'attention', value: '59' }
+  ],
+  slaViolated: '25',
+  mutedAlerts: '25'
+}, { type: 1 });
+
+Data schema:
+  value       — string, main KPI number
+  trend       — string, percentage change (shown with red up arrow)
+  severity[]  — array of {sev: 'critical'|'trouble'|'attention', value: string}
+  slaViolated — string, SLA violated count (optional)
+  mutedAlerts — string, muted alerts count (optional)
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 2: Priority Score
+     Layout: WIDE | Stacked bar + labeled columns
+     Use for: Priority distribution with range labels
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-2', {
+  bars: [
+    { value: '100', label: 'Critical', range: '91-100', color: '#8B1A1A', dotColor: '#8B1A1A', flex: 100 },
+    { value: '80',  label: 'High',     range: '71-90',  color: '#DD1616', dotColor: '#DD1616', flex: 80 },
+    { value: '50',  label: 'Medium',   range: '51-70',  color: '#F4A0A0', dotColor: '#FF5900', flex: 50 },
+    { value: '30',  label: 'Low',      range: '26-50',  color: '#FF5900', dotColor: '#FABB34', flex: 30 },
+    { value: '50',  label: 'Very Low', range: '0-25',   color: '#FABB34', dotColor: '#198019', flex: 50 }
+  ]
+}, { type: 2 });
+
+Data schema:
+  bars[] — array of {
+    value:    string — count for this band
+    label:    string — band name (Critical, High, etc.)
+    range:    string — score range (91-100, etc.)
+    color:    string — bar segment color
+    dotColor: string — dot indicator color
+    flex:     number — relative width in the stacked bar
+  }
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 3: Active Incidents
+     Layout: WIDE | value+spark left, severity columns right
+     Use for: Incident count with severity column breakdown
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-3', {
+  value: '100',
+  trend: '20%',
+  columns: [
+    { label: 'Critical',  value: '25', sev: 'critical',  color: '#DD1616' },
+    { label: 'Trouble',   value: '35', sev: 'trouble',   color: '#FF5900' },
+    { label: 'Attention', value: '40', sev: 'attention',  color: '#FABB34' }
+  ]
+}, { type: 3 });
+
+Data schema:
+  value     — string, total count
+  trend     — string, percentage change
+  columns[] — array of {
+    label: string — column heading
+    value: string — count
+    sev:   string — severity key for icon lookup
+    color: string — left border color
+  }
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 4: Mean Time To Resolve (MTTR)
+     Layout: HALF | Duration parts + clock icon
+     Use for: Time-based KPIs (MTTR, MTTD, response time)
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-4', {
+  parts: [
+    { value: '2', unit: 'Days' },
+    { value: '5', unit: 'Hrs' }
+  ]
+}, { type: 4 });
+
+Data schema:
+  parts[] — array of { value: string, unit: string }
+            Renders as "2 Days  5 Hrs" with large value + small unit
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 5: SLA Violated Incidents
+     Layout: HALF | Big number + segment bar + hourglass icon
+     Use for: Violation counts with severity segment bar
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-5', {
+  value: '20',
+  segments: [
+    { flex: 2,   color: '#8B1A1A' },
+    { flex: 1.5, color: '#FF5900' },
+    { flex: 4,   color: '#FABB34' }
+  ]
+}, { type: 5 });
+
+Data schema:
+  value      — string, total violations
+  segments[] — array of { flex: number, color: string }
+               Renders a proportional color bar (200px wide, 6px tall)
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 6: Total Alert Count
+     Layout: HALF | Big number + trend + bell icon + full sparkline
+     Use for: Volume KPIs with trend sparkline chart
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-6', {
+  value: '18,452',
+  trend: '30%',
+  sparkColor: '#DD1616'
+}, { type: 6 });
+
+Data schema:
+  value      — string, total count
+  trend      — string, percentage change
+  sparkColor — string, color for sparkline SVG stroke + gradient
+               Defaults to '#DD1616' (red) if omitted
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 7: Investigation MTTI
+     Layout: HALF | Duration + trend + subtitle + full sparkline
+     Use for: Time-based KPIs with context subtitle
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-7', {
+  parts: [{ value: '4', unit: 'mins 22s' }],
+  trend: '10%',
+  trendColor: '#198019',
+  subtitle: 'From 247 completed investigations',
+  sparkColor: '#198019'
+}, { type: 7 });
+
+Data schema:
+  parts[]    — array of { value: string, unit: string }
+  trend      — string, percentage change
+  trendColor — string, trend arrow color (#198019 green = good)
+  subtitle   — string, context line below the value
+  sparkColor — string, sparkline color (defaults to '#198019')
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 8: Investigations Running
+     Layout: HALF | Value + icon + progress bar + severity row
+     Use for: Operational dashboards with utilisation metrics
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-8', {
+  value: '247',
+  trend: '10%',
+  trendColor: '#198019',
+  icon: 'icon-tile-zia.svg',
+  progress: { label: 'Queue utilisation', pct: '81.7%' },
+  severity: [
+    { sev: 'critical', value: '560' },
+    { sev: 'trouble', value: '220' },
+    { sev: 'attention', value: '59' }
+  ]
+}, { type: 8 });
+
+Data schema:
+  value      — string, main count
+  trend      — string, percentage change
+  trendColor — string, trend color
+  icon       — string, filename in assets/icons/ (top-right icon)
+  progress   — { label: string, pct: string } — progress bar with label
+  severity[] — array of {sev, value} — severity row at bottom
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 9: Created Incidents
+     Layout: HALF | Value + ring chart + status cards row
+     Use for: Entity counts with completion ring and breakdown
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-9', {
+  value: '247',
+  trend: '10%',
+  trendColor: '#198019',
+  ringPct: 13,
+  subtitle: 'From 2,891 completed investigations',
+  cards: [
+    { label: 'Open',      value: '218', icon: 'icon-alert-info.svg' },
+    { label: 'Resolved',  value: '168', icon: 'icon-alert-success.svg' },
+    { label: 'Escalated', value: '41',  icon: 'icon-tile-sev-attention.svg' }
+  ]
+}, { type: 9 });
+
+Data schema:
+  value      — string, total count
+  trend      — string, percentage change
+  trendColor — string, trend color
+  ringPct    — number (0-100), percentage for the ring chart
+  subtitle   — string, context line
+  cards[]    — array of { label: string, value: string, icon: string }
+               Renders as status card chips below the ring
+-->
+
+<!-- ────────────────────────────────────────────────────────────
+     TYPE 10: All Activities
+     Layout: HALF | Value + change arrow + mini donut + legend
+     Use for: Activity breakdown with donut chart and legend
+     ──────────────────────────────────────────────────────────── -->
+<!--
+ElegantEChart.tileWidget('tile-10', {
+  value: '150 K',
+  change: '3430 (0.5%)',
+  donut: [
+    { pct: 23, color: '#A8E0F0' },
+    { pct: 21, color: '#0099CC' },
+    { pct: 56, color: '#007BA7' }
+  ],
+  legend: [
+    { label: 'Create', value: '1352', color: '#A8E0F0' },
+    { label: 'Delete', value: '1254', color: '#0099CC' },
+    { label: 'Update', value: '3000', color: '#007BA7' }
+  ]
+}, { type: 10 });
+
+Data schema:
+  value    — string, total formatted number
+  change   — string, absolute change with percentage
+  donut[]  — array of { pct: number, color: string } — mini donut segments
+  legend[] — array of { label: string, value: string, color: string }
+-->
+
+<!-- ════════════════════════════════════════════════════════════
+     QUICK REFERENCE — Type Selection Guide
+     ════════════════════════════════════════════════════════════
+
+     Need a...                           → Use Type
+     ───────────────────────────────────────────────
+     Alert summary with severity icons    → Type 1 (wide)
+     Priority/score band distribution     → Type 2 (wide)
+     Incident count with severity cols    → Type 3 (wide)
+     Duration KPI (MTTR, MTTD)           → Type 4 (half)
+     Violation count with segment bar     → Type 5 (half)
+     Volume KPI with sparkline            → Type 6 (half)
+     Time KPI with subtitle + sparkline   → Type 7 (half)
+     Operational metric with progress bar → Type 8 (half)
+     Entity count with ring + cards       → Type 9 (half)
+     Activity breakdown with donut        → Type 10 (half)
+
+     GRID LAYOUT:
+       Wide tiles (1-3): grid-column: span 2 → full row
+       Half tiles (4-10): fit 2 per row in a 2-column grid
+
+     REQUIRED SCRIPTS (in order):
+       <script src="./predefined-components/lib/echarts.min.js"></script>
+       <script src="./predefined-components/echarts-elegant-theme.js"></script>
+       <script src="./predefined-components/echarts-widget.js"></script>
+     echarts-widget.js auto-injects echarts-widget.css for all .ti-* classes.
+     ════════════════════════════════════════════════════════════ -->

@@ -1,0 +1,11 @@
+<!--
+  Elegant Predefined Chart: Horizontal Bar
+  Usage: Top-N rankings, export counts, user activity
+-->
+<div class="card__chart" id="chart-hbar-1" style="width:100%;min-height:280px;"></div>
+<script>
+ElegantEChart.hbar('chart-hbar-1', {
+  labels: ['User A','User B','User C','User D','User E','User F'],
+  datasets: [{ label: 'Export Count', values: [866,3452,34534,35667,1231,1231], color: '#2C66DD' }]
+});
+</script>

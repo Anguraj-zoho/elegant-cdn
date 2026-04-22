@@ -1,0 +1,80 @@
+<!--
+  ============================================================
+  HEADER — Predefined HTML Component (3 Variants)
+  ============================================================
+  Height: 40px, border-bottom #E9E9E9
+
+  VARIANT 1 — Default (with Help Icon):
+  - Set page title:  Change text inside <h1 class="page-header__title">
+  - Help icon:       Remove the button if help icon not needed
+
+  VARIANT 2 — With Back Button:
+  - Back button:     24x24 bordered frame with left-arrow icon (icon-back-arrow.svg)
+  - Set page title:  Change text inside <h1 class="page-header__title">
+  - Help icon:       Optional — add <button class="page-header__help"> if needed
+  - Back action:     Set onclick on the .page-header__back button
+
+  VARIANT 3 — Report Header (with Right Actions):
+  - Purpose:         Purpose-built for Reports pages. MUST be used for every
+                     data-table report under the Reports TopNavBar tab.
+  - Title:           Plain .page-header__title (no back arrow on reports)
+  - Help icon:       Optional .page-header__help (14×14, after title)
+  - Right actions:   .page-header__actions container (margin-left:auto)
+                     with .page-header__action-btn children.
+                     Standard 4 actions: Edit Report, Export As,
+                     Schedule Reports, More.
+  - Button spec:     24px height, transparent bg, 12×12 icon + 12px label,
+                     8px horizontal padding, 4px gap icon-to-label,
+                     hover bg #F0F0F0, active bg #E9E9E9, 2px radius.
+  - Report icons:    icon-rpt-edit.svg     — Edit Report
+                     icon-rpt-export.svg   — Export As (invokes Export drawer)
+                     icon-rpt-schedule.svg — Schedule Reports
+                     icon-rpt-more.svg     — More (opens overflow menu)
+
+  CSS:  tokens.css + header.css
+  ============================================================
+-->
+
+<!-- VARIANT 1: Default — With Help Icon -->
+<div class="page-header">
+  <h1 class="page-header__title">Page Title</h1>
+  <button class="page-header__help" title="Help">
+    <img src="../assets/icons/icon-help.svg" alt="" style="width:14px;height:14px;" />
+  </button>
+</div>
+
+<!-- VARIANT 2: With Back Button -->
+<div class="page-header">
+  <button class="page-header__back" onclick="history.back()" title="Back">
+    <img src="../assets/icons/icon-back-arrow.svg" alt="" />
+  </button>
+  <h1 class="page-header__title">Page Title</h1>
+</div>
+
+<!-- VARIANT 3: Report Header — Title + Help + Right Actions -->
+<!--
+<div class="page-header">
+  <h1 class="page-header__title">All Events</h1>
+  <button class="page-header__help" title="Help">
+    <img src="../assets/icons/icon-report-help.svg" alt="" style="width:14px;height:14px;" />
+  </button>
+  <div class="page-header__actions">
+    <button class="page-header__action-btn" title="Edit this report">
+      <img src="../assets/icons/icon-rpt-edit.svg" alt="" />
+      <span>Edit Report</span>
+    </button>
+    <button class="page-header__action-btn" title="Export report data">
+      <img src="../assets/icons/icon-rpt-export.svg" alt="" />
+      <span>Export As</span>
+    </button>
+    <button class="page-header__action-btn" title="Schedule periodic reports">
+      <img src="../assets/icons/icon-rpt-schedule.svg" alt="" />
+      <span>Schedule Reports</span>
+    </button>
+    <button class="page-header__action-btn" title="More actions">
+      <img src="../assets/icons/icon-rpt-more.svg" alt="" />
+      <span>More</span>
+    </button>
+  </div>
+</div>
+-->

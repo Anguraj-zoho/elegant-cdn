@@ -1,0 +1,11 @@
+<!--
+  Elegant Predefined Chart: Pictorial Bar
+  Usage: Icon-based bar visualization (affected device types)
+-->
+<div class="card__chart" id="chart-pictorial-1" style="width:100%;min-height:280px;"></div>
+<script>
+ElegantEChart.pictorialBar('chart-pictorial-1', {
+  labels: ['Servers','Laptops','Firewalls','Switches','IoT','Mobile'],
+  datasets: [{ label: 'Affected', values: [42,78,15,23,56,34], color: '#2C66DD', symbol: 'roundRect' }]
+}, { symbolSize: ['100%', 20], repeat: true });
+</script>

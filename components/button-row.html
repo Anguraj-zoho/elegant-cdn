@@ -1,0 +1,87 @@
+<!--
+  ============================================================
+  BUTTON ROW — Predefined HTML Component
+  ============================================================
+  Right-aligned row of action buttons above the table.
+
+  BUTTON VARIANTS:
+  ────────────────────────────────────────────────────────────
+  1) Primary Button   — .btn-primary   (filled blue #2C66DD,  white text + white icons,  28px)
+  2) Secondary Button — .btn-secondary (white fill, 1px BLUE  #2C66DD border, blue text/icons, 28px)
+  3) Tertiary Button  — .btn-tertiary  (white fill, 1px GREY  #ABABAB border, black text/icons, 28px)
+
+  SECONDARY vs TERTIARY: both are white + outlined + 28px. The ONLY visual
+  difference is border color (blue = secondary/next-action, grey = tertiary/neutral).
+
+  ICON ASSETS (external SVG → hard-coded stroke colors — <img> cannot inherit CSS color):
+  - Primary:   assets/icons/icon-*.svg        (black stroke, CSS inverts to white)
+  - Secondary: assets/icons/icon-btn-*.svg         (hard-coded #2C66DD stroke)
+  - Tertiary:  assets/icons/icon-btn-*-dark.svg    (hard-coded #000000 stroke)
+
+  PAIRING CONVENTION:
+  - Secondary LEFT + Primary RIGHT   → Cancel / Save footer
+  - Tertiary LEFT of a button row    → low-emphasis alt (Reset / Skip / Clear)
+
+  CSS:  tokens.css + table.css
+  ============================================================
+-->
+
+<!-- ── Variant A: Primary only ── -->
+<div class="button-row">
+  <button class="btn-primary">
+    <img src="../assets/icons/icon-plus.svg" alt="" style="width:10px;height:10px;" />
+    <span>Add Device</span>
+  </button>
+</div>
+
+<!-- ── Variant B: Secondary only ── -->
+<div class="button-row">
+  <button class="btn-secondary">
+    <img src="../assets/icons/icon-btn-plus.svg" alt="" />
+    <span>Add Device</span>
+  </button>
+</div>
+
+<!-- ── Variant C: Tertiary only (neutral / ghost action) ── -->
+<div class="button-row">
+  <button class="btn-tertiary">
+    <img src="../assets/icons/icon-btn-plus-dark.svg" alt="" />
+    <span>Add Filter</span>
+  </button>
+</div>
+
+<!-- ── Variant D: Cancel / Save (Secondary LEFT + Primary RIGHT) ── -->
+<div class="button-row" style="gap:8px;">
+  <button class="btn-secondary"><span>Cancel</span></button>
+  <button class="btn-primary"><span>Save Changes</span></button>
+</div>
+
+<!-- ── Variant E: Three-level action row (Tertiary + Secondary + Primary) ── -->
+<div class="button-row" style="gap:8px;">
+  <button class="btn-tertiary"><span>Reset</span></button>
+  <button class="btn-secondary"><span>Preview</span></button>
+  <button class="btn-primary"><span>Publish</span></button>
+</div>
+
+<!-- ── Variant F: Secondary with trailing chevron (wizard / stepper) ── -->
+<div class="button-row">
+  <button class="btn-secondary">
+    <span>Next Step</span>
+    <img src="../assets/icons/icon-btn-chevron-right.svg" alt="" />
+  </button>
+</div>
+
+<!-- ── Variant G: Tertiary with leading help icon ── -->
+<div class="button-row">
+  <button class="btn-tertiary">
+    <img src="../assets/icons/icon-btn-help-dark.svg" alt="" />
+    <span>Learn More</span>
+  </button>
+</div>
+
+<!-- ── Variant H: Disabled states (all three kinds) ── -->
+<div class="button-row" style="gap:8px;">
+  <button class="btn-tertiary" disabled><span>Disabled Tertiary</span></button>
+  <button class="btn-secondary" disabled><span>Disabled Secondary</span></button>
+  <button class="btn-primary" disabled><span>Disabled Primary</span></button>
+</div>

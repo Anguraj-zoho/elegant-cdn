@@ -1,0 +1,565 @@
+/* ============================================================
+   TABLE + ACTIONBAR — Captured from Figma MCP
+   ActionBar: h=36, padding 6px 4px, bg=white, stroke #E9E9E9
+   Table: header h=32, row h=40, col gap via padding
+   Actions icons: 24x24 each, gap 8px
+   Agent/Status: 14x14 icon + text, gap 8px
+   Checkbox col: 48px
+   ============================================================ */
+
+/* ── Button Row (above ActionBar) ── */
+.button-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: var(--button-row-padding-top);
+  padding-bottom: var(--button-row-padding-bottom);
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--btn-primary-height);
+  padding: var(--btn-primary-padding);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-size: var(--btn-primary-font-size);
+  font-family: inherit;
+  font-weight: 400;
+  border: none;
+  border-radius: var(--btn-primary-radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.btn-primary:hover {
+  background: #2458C4;
+}
+/* Icons inside .btn-primary MUST render white on the blue fill.
+   - <img src="*.svg"> with a black stroke/fill: invert to #FFFFFF via filter.
+   - Inline <svg> using currentColor: inherits the button's white text color. */
+.btn-primary img,
+.btn-primary svg {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  color: #FFFFFF;
+  fill: #FFFFFF;
+  stroke: #FFFFFF;
+}
+.btn-primary img,
+.btn-primary svg {
+  filter: brightness(0) invert(1);
+}
+.btn-primary:disabled img,
+.btn-primary:disabled svg,
+.btn-primary[disabled] img,
+.btn-primary[disabled] svg {
+  /* Keep icon white even when the button is disabled (opacity on the button handles the muted look). */
+  filter: brightness(0) invert(1);
+}
+
+/* ── Secondary Button (Figma: 740:68772) ────────────────────────────────
+   White fill, 1px #2C66DD border, blue text + blue icons.
+   Icons use stroke="currentColor" so they inherit the button's blue color —
+   no filter hack needed. Height 28px matches primary so they align in rows.
+   ──────────────────────────────────────────────────────────────────── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--btn-secondary-height);
+  padding: var(--btn-secondary-padding);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  font-family: inherit;
+  font-size: var(--btn-secondary-font-size);
+  font-weight: 400;
+  line-height: 1;
+  border: 1px solid var(--btn-secondary-border);
+  border-radius: var(--btn-secondary-radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.btn-secondary:hover {
+  background: var(--btn-secondary-hover-bg);
+}
+.btn-secondary:disabled,
+.btn-secondary[disabled] {
+  opacity: var(--btn-secondary-disabled-opacity);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Icons inside .btn-secondary render BLUE (#2C66DD).
+   - <img src="icon-btn-*.svg">  → the SVG files have hard-coded stroke="#2C66DD"
+     (external SVG loaded via <img> does NOT inherit parent CSS color, so we
+     bake the color into the asset. This matches how icon-plus.svg / icon-help.svg
+     work elsewhere in the library.)
+   - Inline <svg stroke="currentColor"> → inherits the button's text color (#2C66DD).
+   Both approaches produce identical blue icons. */
+.btn-secondary svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+}
+.btn-secondary img,
+.btn-secondary svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* ── Tertiary Button (Figma: 740:68997) ─────────────────────────────────
+   White outlined neutral button. White fill, 1px #ABABAB solid grey border,
+   black text + black icons. Same 28px height as primary/secondary for
+   row-baseline alignment — distinguished from Secondary ONLY by border
+   color (grey vs blue). Used for low-emphasis supporting actions such as
+   "Clear", "Reset", "Skip", "Add Filter", inline table-row actions, or a
+   third option in a multi-action row.
+
+   Text (#000000) and icon (#000000) are the same color in the current
+   spec, but we keep separate --btn-tertiary-text and --btn-tertiary-icon
+   tokens so future Figma updates can diverge them without a CSS rewrite.
+   ──────────────────────────────────────────────────────────────────── */
+.btn-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--btn-tertiary-height);
+  padding: var(--btn-tertiary-padding);
+  background: var(--btn-tertiary-bg);
+  color: var(--btn-tertiary-text);
+  font-family: inherit;
+  font-size: var(--btn-tertiary-font-size);
+  font-weight: 400;
+  line-height: 1;
+  border: 1px solid var(--btn-tertiary-border);
+  border-radius: var(--btn-tertiary-radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-tertiary:hover {
+  background: var(--btn-tertiary-hover-bg);
+}
+.btn-tertiary:disabled,
+.btn-tertiary[disabled] {
+  opacity: var(--btn-tertiary-disabled-opacity);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Icons inside .btn-tertiary render BLACK (#000000).
+   - <img src="icon-btn-*-dark.svg">  → the *-dark.svg files have hard-coded
+     stroke="#000000" (external SVG loaded via <img> does NOT inherit parent
+     CSS color, so we bake the color into the asset).
+   - Inline <svg stroke="currentColor"> → set an inline style or inherits
+     from a CSS rule that sets color to --btn-tertiary-icon.
+   Both approaches produce identical black icons. */
+.btn-tertiary svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--btn-tertiary-icon);
+  color: var(--btn-tertiary-icon);
+}
+.btn-tertiary img,
+.btn-tertiary svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* ── ActionBar ── */
+.actionbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--actionbar-height);               /* 36px */
+  border-top: 1px solid #E9E9E9;                 /* Figma: strokeTop only */
+  background: var(--actionbar-bg);
+  padding: 6px 4px;                              /* Figma: padding 6 4 6 4 */
+}
+
+.actionbar__left,
+.actionbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;                                       /* Figma: itemSpacing 8 */
+}
+
+.actionbar__icon-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0;
+  transition: background 0.12s;
+}
+.actionbar__icon-btn:hover {
+  background: var(--table-header-bg);
+}
+.actionbar__icon-btn img,
+.actionbar__icon-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* View-type combined icon (grid + dropdown arrow) */
+.actionbar__icon-btn--view img,
+.actionbar__icon-btn--view svg {
+  width: 42px;
+  height: 24px;
+}
+.actionbar__icon-btn--view {
+  width: auto;
+}
+
+.actionbar__separator {
+  width: 1px;
+  height: 16px;
+  background: var(--actionbar-border);
+  flex-shrink: 0;
+}
+
+.actionbar__pagination {
+  font-size: var(--actionbar-pagination-font-size);
+  color: var(--sidebar-text-secondary);
+  white-space: nowrap;
+}
+.actionbar__pagination b {
+  color: var(--table-text-primary);
+  font-weight: 600;
+}
+.actionbar__pagination i {
+  font-style: italic;
+}
+
+/* Pagination prev/next arrows (24x24) */
+.actionbar__nav-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.actionbar__nav-btn img,
+.actionbar__nav-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Report ActionBar Primary Button (Type 8) ──
+   Outlined secondary-style button with icon + label,
+   used on the LEFT side of report-page action bars.
+   Default use: "+ Incident" to trigger Incident Workbench.
+   Also reusable for "+ Export", "+ Save View", etc. */
+.actionbar__btn-report {
+  height: 24px;
+  border: 1px solid #ABABAB;
+  border-radius: 2px;
+  padding: 5px 16px;
+  font-size: 12px;
+  font-family: var(--font-family);
+  background: #FFFFFF;
+  color: #000000;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: background 0.12s;
+}
+.actionbar__btn-report:hover {
+  background: #F0F0F0;
+}
+.actionbar__btn-report:active {
+  background: #E9E9E9;
+}
+.actionbar__btn-report img,
+.actionbar__btn-report svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* ── ActionBar Bulk Actions (Type 2) ── */
+.actionbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.actionbar__action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: #000;
+  border-radius: 2px;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+.actionbar__action:hover {
+  background: #E9E9E9;
+}
+.actionbar__action.actionbar__action--active {
+  background: #EAF0FC;
+}
+.actionbar__action img,
+.actionbar__action svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.actionbar__action--more {
+  padding: 5px 6px;
+}
+.actionbar__action--more img,
+.actionbar__action--more svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── ActionBar Selected Count (Type 7) ── */
+.actionbar__selected-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #000;
+  white-space: nowrap;
+}
+.actionbar__selected-count b {
+  font-weight: 600;
+}
+.actionbar__clear-all {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--link-color);
+  padding: 0;
+}
+.actionbar__clear-all:hover {
+  text-decoration: underline;
+}
+
+/* ── ActionBar Filter Dropdown (Type 5) ── */
+.actionbar__filter-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #000;
+  white-space: nowrap;
+}
+.actionbar__filter-dropdown select {
+  border: 1px solid #DCDCDC;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 12px;
+  padding: 2px 20px 2px 6px;
+  height: 24px;
+  background: #fff;
+  cursor: pointer;
+  appearance: auto;
+}
+
+/* ── ActionBar Toggle View (Type 6) ── */
+.actionbar__icon-btn--toggle {
+  width: auto;
+}
+.actionbar__icon-btn--toggle img,
+.actionbar__icon-btn--toggle svg {
+  width: 50px;
+  height: 20px;
+}
+
+/* ── ActionBar Table View Type (Type 4) ── */
+.actionbar__icon-btn--table-view {
+  width: auto;
+}
+.actionbar__icon-btn--table-view img,
+.actionbar__icon-btn--table-view svg {
+  width: 42px;
+  height: 24px;
+}
+
+/* ── Table Scroll Containment Chain ──
+   For .table-scroll-area to be the SOLE scroll container, every ancestor must
+   be height-constrained with overflow:hidden. The chain:
+     html,body { overflow:hidden; height:100% }
+     .app-shell { height:100vh; flex column }        — already in layout.css
+     .app-body  { overflow:hidden; min-height:0 }    — add via page override
+     .main-content { overflow:hidden; min-height:0 } — add via page override
+     .table-scroll-area { flex:1; overflow-y:auto }   — the ONLY scrollbox
+   Without overflow:hidden on ancestors, content overflows to the browser
+   viewport scrollbar and the entire page scrolls — the #1 bug we keep fixing.
+   HTML: <div class="table-scroll-area"> <div class="actionbar">…</div> <div class="data-table-wrap">…</div> </div>
+   MUST be placed AFTER predefined CSS in the cascade (page-scoped <style> or inline). */
+.table-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.table-scroll-area .data-table-wrap { overflow: visible; }
+.table-scroll-area .data-table { border-collapse: separate; border-spacing: 0; table-layout: fixed; width: 100%; }
+.table-scroll-area .data-table td,
+.table-scroll-area .data-table th { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table-scroll-area .data-table tbody tr  { border-top: none; border-bottom: none; }
+.table-scroll-area .data-table tbody td  { border-top: 1px solid #E9E9E9; }
+.table-scroll-area .data-table tbody tr:last-child td { border-bottom: 1px solid #E9E9E9; }
+.table-scroll-area .data-table thead tr  { background: transparent; }
+.table-scroll-area .actionbar {
+  position: sticky; top: 0; z-index: 3;
+  background: var(--actionbar-bg, #FFFFFF);
+}
+.table-scroll-area .data-table thead th {
+  position: sticky; top: 36px; z-index: 2;
+  background: var(--table-header-bg, #FAFAFA);
+  border-top: 1px solid #E9E9E9;
+  box-shadow: inset 0 -1px 0 #E9E9E9;
+}
+.classic-tab + .table-scroll-area { margin-top: 16px; }
+
+/* ── Data Table ── */
+.data-table-wrap {
+  overflow-x: auto;
+  /* Figma: NO left/right border on table — only horizontal row lines */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--table-font-size);
+  line-height: 1.5;
+}
+
+.data-table thead tr {
+  background: var(--table-header-bg);
+}
+
+.data-table th {
+  height: var(--table-header-height);             /* 32px */
+  padding: 0 8px;
+  border-top: 1px solid #E9E9E9;                 /* Figma: strokeTop only */
+  border-bottom: none;
+  text-align: left;
+  vertical-align: middle;
+  font-weight: var(--table-header-font-weight);   /* 500 Medium */
+  color: var(--table-header-color);               /* BLACK */
+  font-size: var(--table-header-font-size);
+  white-space: nowrap;
+}
+
+.data-table td {
+  height: var(--table-row-height);                /* 40px */
+  padding: 0 8px;
+  vertical-align: middle;
+  color: var(--table-text-primary);
+}
+
+.data-table tbody tr {
+  border-top: 1px solid #E9E9E9;                 /* Figma: strokeTop=1 */
+  border-bottom: 1px solid #E9E9E9;              /* Figma: strokeBottom=1 */
+  /* NO left/right borders — Figma: strokeLeft=0, strokeRight=0 */
+  transition: background 0.1s;
+}
+.data-table tbody tr:hover {
+  background: var(--table-hover-bg);
+}
+.data-table tbody tr.data-table__row--selected {
+  background: var(--table-selected-bg, #F9FBFF);
+}
+.data-table tbody tr.data-table__row--selected:hover {
+  background: var(--table-selected-hover-bg, #F0F5FF);
+}
+.data-table tbody tr.data-table__row--focused {
+  background: var(--table-hover-bg, #FAFAFA);
+}
+
+/* ── Cell: Actions (24x24 icons, gap 8px) ── */
+.cell-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;                                       /* Figma: itemSpacing 8 */
+}
+.cell-actions img,
+.cell-actions svg {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Cell: Icon + Text (Agent column, 14x14 icon + text) ── */
+.cell-icon-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;                                       /* Figma: Slot 4 itemSpacing 8 */
+}
+.cell-icon-text img,
+.cell-icon-text svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Cell: Status (14x14 icon + text) ── */
+.cell-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cell-status img,
+.cell-status svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Cell: Link ── */
+.cell-link {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.cell-link:hover {
+  text-decoration: underline;
+  color: var(--link-hover);
+}
+
+/* ── Cell: Checkbox (16x16 checkbox, padding-left 8px) ── */
+.cell-checkbox {
+  width: 48px;
+  padding-left: 8px !important;
+  text-align: left;
+}
+.cell-checkbox img,
+.cell-checkbox svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  display: block;
+}
