@@ -90,43 +90,53 @@
 
   /* ── Collapse / Expand sidebar (desktop + overlay close) ── */
   function initSidebarToggle() {
-    var sidebar    = document.querySelector('.sidemenu');
-    var collapseBtn = document.querySelector('.sidemenu__bottom-btn');
-    var expandBtn  = document.getElementById('sidebarExpand');
-    var backdrop   = document.querySelector('.sidemenu-backdrop');
+    var backdrop = document.querySelector('.sidemenu-backdrop');
+    var expandBtn = document.getElementById('sidebarExpand');
 
-    if (!sidebar || !collapseBtn || !expandBtn) return;
+    // Per-sidebar binding so catalogs with multiple sidemenus work correctly.
+    document.querySelectorAll('.sidemenu').forEach(function (sidebar) {
+      var collapseBtn = sidebar.querySelector('.sidemenu__bottom-btn');
+      if (!collapseBtn) return;
 
-    function closeOverlay() {
-      sidebar.classList.remove('sidemenu--overlay-open');
-      if (backdrop) backdrop.classList.remove('sidemenu-backdrop--visible');
-      document.body.style.overflow = '';
-    }
-
-    function collapse() {
-      if (isOverlayMode()) {
-        closeOverlay();
+      function closeOverlay() {
+        sidebar.classList.remove('sidemenu--overlay-open');
+        if (backdrop) backdrop.classList.remove('sidemenu-backdrop--visible');
+        document.body.style.overflow = '';
       }
-      sidebar.classList.add('sidemenu--collapsed');
-      expandBtn.classList.add('sidemenu-expand--visible');
-      collapseBtn.title = 'Expand sidebar';
-    }
 
-    function expand() {
-      sidebar.classList.remove('sidemenu--collapsed');
-      expandBtn.classList.remove('sidemenu-expand--visible');
-      collapseBtn.title = 'Collapse sidebar';
-    }
-
-    collapseBtn.addEventListener('click', function () {
-      if (sidebar.classList.contains('sidemenu--collapsed')) {
-        expand();
-      } else {
-        collapse();
+      function collapse() {
+        if (isOverlayMode()) {
+          closeOverlay();
+        }
+        sidebar.classList.add('sidemenu--collapsed');
+        if (expandBtn) expandBtn.classList.add('sidemenu-expand--visible');
+        collapseBtn.title = 'Expand sidebar';
       }
+
+      function expand() {
+        sidebar.classList.remove('sidemenu--collapsed');
+        if (expandBtn) expandBtn.classList.remove('sidemenu-expand--visible');
+        collapseBtn.title = 'Collapse sidebar';
+      }
+
+      collapseBtn.addEventListener('click', function () {
+        if (sidebar.classList.contains('sidemenu--collapsed')) {
+          expand();
+        } else {
+          collapse();
+        }
+      });
     });
 
-    expandBtn.addEventListener('click', expand);
+    // Page-level expand handle only relevant when present (real Shell layouts).
+    if (expandBtn) {
+      expandBtn.addEventListener('click', function () {
+        document.querySelectorAll('.sidemenu--collapsed').forEach(function (s) {
+          s.classList.remove('sidemenu--collapsed');
+        });
+        expandBtn.classList.remove('sidemenu-expand--visible');
+      });
+    }
   }
 
   /* ── Mobile/Tablet: overlay drawer toggle ── */

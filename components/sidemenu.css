@@ -116,8 +116,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  height: var(--sidebar-item-height);
-  padding: 0 var(--sidebar-l1-padding-left);
+  min-height: var(--sidebar-item-height);
+  padding: 6px var(--sidebar-l1-padding-left);
   font-size: var(--sidebar-l1-font-size);
   font-weight: var(--sidebar-l1-font-weight);
   color: var(--sidebar-text-primary);
@@ -128,6 +128,12 @@
   text-align: left;
   font-family: inherit;
   transition: background 0.12s;
+  line-height: 1.4;
+}
+.sidemenu__l1 > span {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 .sidemenu__l1:hover {
   background: rgba(0, 0, 0, 0.04);
@@ -151,24 +157,27 @@
 .sidemenu__l2-subheader {
   display: flex;
   align-items: center;
-  height: var(--sidebar-item-height);
-  padding: 0 8px 0 var(--sidebar-l2-subheader-padding-left);
+  min-height: var(--sidebar-item-height);
+  padding: 6px 8px 6px var(--sidebar-l2-subheader-padding-left);
   font-size: var(--sidebar-item-font-size);
   color: var(--sidebar-text-secondary);
+  line-height: 1.4;
 }
 
 /* L2 item (e.g. "Devices", "Applications") */
 .sidemenu__item {
   display: flex;
   align-items: center;
-  height: var(--sidebar-item-height);
-  padding: 0 8px 0 var(--sidebar-l2-item-padding-left);
+  min-height: var(--sidebar-item-height);
+  padding: 6px 8px 6px var(--sidebar-l2-item-padding-left);
   font-size: var(--sidebar-item-font-size);
   font-weight: 400;
   color: var(--sidebar-text-primary);
   text-decoration: none;
   cursor: pointer;
   transition: background 0.12s;
+  line-height: 1.4;
+  word-break: break-word;
 }
 .sidemenu__item:hover {
   background: rgba(0, 0, 0, 0.04);
