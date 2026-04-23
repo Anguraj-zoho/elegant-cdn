@@ -93,39 +93,28 @@
     var backdrop = document.querySelector('.sidemenu-backdrop');
     var expandBtn = document.getElementById('sidebarExpand');
 
-    // Per-sidebar binding so catalogs with multiple sidemenus work correctly.
-    document.querySelectorAll('.sidemenu').forEach(function (sidebar) {
-      var collapseBtn = sidebar.querySelector('.sidemenu__bottom-btn');
-      if (!collapseBtn) return;
+    // Use event delegation on <document> so it works regardless of DOM parse timing.
+    // Any click on a .sidemenu__bottom-btn (or its children) toggles the parent sidebar.
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('.sidemenu__bottom-btn');
+      if (!btn) return;
+      var sidebar = btn.closest('.sidemenu');
+      if (!sidebar) return;
 
-      function closeOverlay() {
-        sidebar.classList.remove('sidemenu--overlay-open');
-        if (backdrop) backdrop.classList.remove('sidemenu-backdrop--visible');
-        document.body.style.overflow = '';
-      }
-
-      function collapse() {
+      if (sidebar.classList.contains('sidemenu--collapsed')) {
+        sidebar.classList.remove('sidemenu--collapsed');
+        if (expandBtn) expandBtn.classList.remove('sidemenu-expand--visible');
+        btn.title = 'Collapse sidebar';
+      } else {
         if (isOverlayMode()) {
-          closeOverlay();
+          sidebar.classList.remove('sidemenu--overlay-open');
+          if (backdrop) backdrop.classList.remove('sidemenu-backdrop--visible');
+          document.body.style.overflow = '';
         }
         sidebar.classList.add('sidemenu--collapsed');
         if (expandBtn) expandBtn.classList.add('sidemenu-expand--visible');
-        collapseBtn.title = 'Expand sidebar';
+        btn.title = 'Expand sidebar';
       }
-
-      function expand() {
-        sidebar.classList.remove('sidemenu--collapsed');
-        if (expandBtn) expandBtn.classList.remove('sidemenu-expand--visible');
-        collapseBtn.title = 'Collapse sidebar';
-      }
-
-      collapseBtn.addEventListener('click', function () {
-        if (sidebar.classList.contains('sidemenu--collapsed')) {
-          expand();
-        } else {
-          collapse();
-        }
-      });
     });
 
     // Page-level expand handle only relevant when present (real Shell layouts).
