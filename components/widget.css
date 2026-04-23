@@ -574,21 +574,22 @@
   inset: 0;
   z-index: 9999;
   display: none;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   background: rgba(0, 0, 0, 0.45);
-  padding: 32px;
+  padding: 24px;
   animation: widget-modal-fade 0.18s ease;
 }
 .widget-modal.is-open {
   display: flex;
 }
+/* Panel stretches to fill most of the viewport (minus backdrop padding) so
+   the widget inside gets the full right-side real estate. */
 .widget-modal__panel {
   position: relative;
+  flex: 1;
   width: 100%;
-  max-width: 1280px;
   height: 100%;
-  max-height: 720px;
   background: #FFFFFF;
   border-radius: 6px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24);
@@ -631,19 +632,62 @@
 .widget-modal__body {
   flex: 1;
   min-height: 0;
-  overflow: auto;
-  padding: 20px;
+  overflow: hidden;
+  padding: 24px;
   display: flex;
   flex-direction: column;
 }
+/* Cloned widget fills the entire modal panel — all inline size limits from
+   the original widget (max-width, fixed height on .chart-container, etc.)
+   are overridden so the chart canvas stretches dynamically to fill the
+   full available width and height. */
 .widget-modal__body > .widget {
-  flex: 1;
-  border: none;
-  padding: 0;
-  min-height: 0;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
 }
-.widget-modal__body > .widget .widget__toolbar { display: none; }
-.widget-modal__body .chart-container { min-height: 400px; }
+.widget-modal__body > .widget > .widget__header { flex-shrink: 0; }
+.widget-modal__body > .widget > .widget__toolbar { display: none !important; }
+.widget-modal__body > .widget > .widget__body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+.widget-modal__body > .widget .chart-container {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  position: relative;
+}
+.widget-modal__body > .widget .chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+.widget-modal__body > .widget .dash,
+.widget-modal__body > .widget .dash__row,
+.widget-modal__body > .widget .alert-feed,
+.widget-modal__body > .widget .hbar {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 0 !important;
+}
+.widget-modal__body > .widget .chart-legend { flex-shrink: 0; }
 
 @keyframes widget-modal-fade {
   from { opacity: 0; }

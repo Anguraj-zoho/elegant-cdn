@@ -508,26 +508,50 @@
     var body = m.querySelector('.widget-modal__body');
     body.innerHTML = '';
     var clone = widget.cloneNode(true);
+
+    // Strip size-constraining inline styles from cloned root + chart containers
+    // so the modal CSS can stretch everything to fill available space.
+    var STRIP_PROPS = ['maxWidth', 'minWidth', 'width', 'maxHeight', 'minHeight', 'height', 'flex'];
+    function stripSizeStyles(el) {
+      if (!el || !el.style) return;
+      STRIP_PROPS.forEach(function (p) { el.style[p] = ''; });
+    }
+    stripSizeStyles(clone);
+    clone.querySelectorAll('.chart-container, .widget__body, .dash, .dash__row, .alert-feed, .hbar')
+      .forEach(stripSizeStyles);
+
     clone.querySelectorAll('canvas').forEach(function (c) {
       var old = c.id;
       c.id = old ? old + '__modal' : '';
       c.removeAttribute('width');
       c.removeAttribute('height');
+      c.style.width = '';
+      c.style.height = '';
     });
     clone.querySelectorAll('[id]').forEach(function (el) {
       if (el.tagName !== 'CANVAS' && !el.id.endsWith('__modal')) {
         el.id = el.id + '__modal';
       }
     });
+
     body.appendChild(clone);
     m.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 
-    var initScript = widget.getAttribute('data-widget-init');
-    if (initScript && window[initScript]) {
-      try { window[initScript](clone); } catch (e) { console.error(e); }
+    // Defer chart rendering until the layout is committed so Chart.js
+    // measures the final stretched container size (not the clone's origin).
+    function fire() {
+      var initScript = widget.getAttribute('data-widget-init');
+      if (initScript && window[initScript]) {
+        try { window[initScript](clone); } catch (e) { console.error(e); }
+      } else {
+        widget.dispatchEvent(new CustomEvent('widget:maximized', { detail: { clone: clone } }));
+      }
+    }
+    if (window.requestAnimationFrame) {
+      requestAnimationFrame(function () { requestAnimationFrame(fire); });
     } else {
-      widget.dispatchEvent(new CustomEvent('widget:maximized', { detail: { clone: clone } }));
+      setTimeout(fire, 16);
     }
   }
 
