@@ -208,26 +208,41 @@
     return new Chart(ctx, config);
   }
 
-  /* ── BAR CHART ── */
+  /* ── BAR CHART ──
+     Accepts both { data: [...] } (Chart.js native) and { values: [...] } (legacy).
+     Accepts both { backgroundColor: '#...' } and { color: '#...' } / { colors: [...] }. */
   function bar(canvasId, data, options) {
     var ctx = getCtx(canvasId);
     if (!ctx) return null;
     var opts = options || {};
-    var config = merge(baseDefaults, {
+    var config = {
       type: 'bar',
       data: {
         labels: data.labels || [],
         datasets: (data.datasets || []).map(function (ds, i) {
           return {
             label: ds.label || '',
-            data: ds.values || [],
-            backgroundColor: ds.colors || ds.color || PALETTE[i],
+            data: ds.data || ds.values || [],
+            backgroundColor: ds.backgroundColor || ds.colors || ds.color || PALETTE[i % PALETTE.length],
             borderRadius: 2,
             maxBarThickness: opts.maxBarThickness || 40,
+            stack: opts.stacked ? 'stack1' : undefined,
           };
         }),
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#272D42',
+            titleFont: { family: fontFamily, size: 12 },
+            bodyFont: { family: fontFamily, size: 11 },
+            cornerRadius: 4,
+            padding: 8,
+          },
+        },
         scales: {
           x: {
             grid: { display: false },
@@ -242,7 +257,7 @@
           },
         },
       },
-    });
+    };
     return new Chart(ctx, config);
   }
 

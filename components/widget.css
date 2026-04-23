@@ -128,9 +128,16 @@
   z-index: 3;
 }
 .widget:hover .widget__toolbar,
-.card:hover .widget__toolbar {
+.card:hover .widget__toolbar,
+.widget:focus-within .widget__toolbar {
   opacity: 1;
   pointer-events: auto;
+}
+/* Subtle white bg so icons read against chart pixels */
+.widget:hover .widget__toolbar {
+  background: rgba(255,255,255,0.92);
+  border-radius: 4px;
+  padding: 2px;
 }
 .widget__toolbar-btn {
   position: relative;
