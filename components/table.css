@@ -473,6 +473,23 @@
   white-space: nowrap;
 }
 
+.data-table th .t2-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.data-table th .t2-sort::after {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 12px;
+  background: url('../assets/icons/icon-sort-asc.svg') center/contain no-repeat;
+}
+.data-table th .t2-sort--desc::after {
+  background-image: url('../assets/icons/icon-sort-desc.svg');
+}
+
 .data-table td {
   height: var(--table-row-height);                /* 40px */
   padding: 0 8px;
