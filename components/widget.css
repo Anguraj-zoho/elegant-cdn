@@ -75,6 +75,7 @@
 
 /* ── Widget card ── */
 .widget {
+  position: relative;
   background: var(--widget-bg);
   border: 1px solid var(--widget-border);
   border-radius: var(--widget-radius);
@@ -108,10 +109,15 @@
 }
 
 /* ── Widget toolbar (maximize / refresh / more icons) ──
-   BEHAVIOR: Hidden by default. Appears on widget hover.
-   Individual icon bg is transparent; shows grey bg only on icon hover.
-   Each button supports a tooltip via title="" or data-tooltip="". */
+   BEHAVIOR: Floats at top-right corner of the widget, hidden by default.
+   Appears on widget hover. Individual icon bg is transparent; shows grey
+   bg only on icon hover. Each button supports a tooltip via data-tooltip.
+   Tip: place the toolbar INSIDE .widget (any nested level is fine) — CSS
+   positions it absolutely in the card's top-right corner. */
 .widget__toolbar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
   display: flex;
   align-items: center;
   gap: var(--widget-toolbar-gap);
@@ -119,10 +125,10 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
+  z-index: 3;
 }
-.widget:hover > .widget__header > .widget__toolbar,
-.widget:hover > .ch > .widget__toolbar,
-.card:hover > .ch > .widget__toolbar {
+.widget:hover .widget__toolbar,
+.card:hover .widget__toolbar {
   opacity: 1;
   pointer-events: auto;
 }
@@ -551,4 +557,98 @@
   .dash__row {
     flex-direction: column;
   }
+}
+
+/* ── Widget Maximize Modal (fullscreen overlay) ──
+   Driven by widget.js. Clone of the widget appears in a centered modal.
+   Close with ESC, backdrop click, or the close button. */
+.widget-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 32px;
+  animation: widget-modal-fade 0.18s ease;
+}
+.widget-modal.is-open {
+  display: flex;
+}
+.widget-modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  height: 100%;
+  max-height: 720px;
+  background: #FFFFFF;
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.widget-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--widget-border);
+  flex-shrink: 0;
+}
+.widget-modal__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--widget-title-color);
+}
+.widget-modal__close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #626262;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.widget-modal__close:hover {
+  background: #F0F0F0;
+  color: #000;
+}
+.widget-modal__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.widget-modal__body > .widget {
+  flex: 1;
+  border: none;
+  padding: 0;
+  min-height: 0;
+}
+.widget-modal__body > .widget .widget__toolbar { display: none; }
+.widget-modal__body .chart-container { min-height: 400px; }
+
+@keyframes widget-modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Refresh spin animation */
+.widget__toolbar-btn.is-spinning img,
+.widget__toolbar-btn.is-spinning svg {
+  animation: widget-refresh-spin 0.6s linear;
+}
+@keyframes widget-refresh-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

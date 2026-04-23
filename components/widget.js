@@ -449,6 +449,116 @@
     });
   }
 
+  /* ── Widget Toolbar Interactions ──
+     Maximize: clones the widget into a fullscreen modal, re-runs any
+     [data-widget-init] script so charts re-render at large size.
+     Refresh:  spins the icon and re-runs any [data-widget-init] script
+     local to the widget (if present) to re-populate chart data.
+     Close:    ESC key, backdrop click, or close button.
+  */
+  var modalEl = null;
+  var modalCloseBtn = null;
+
+  function ensureModal() {
+    if (modalEl) return modalEl;
+    modalEl = document.createElement('div');
+    modalEl.className = 'widget-modal';
+    modalEl.innerHTML =
+      '<div class="widget-modal__panel">' +
+        '<div class="widget-modal__head">' +
+          '<span class="widget-modal__title"></span>' +
+          '<button class="widget-modal__close" aria-label="Close">\u2715</button>' +
+        '</div>' +
+        '<div class="widget-modal__body"></div>' +
+      '</div>';
+    document.body.appendChild(modalEl);
+    modalCloseBtn = modalEl.querySelector('.widget-modal__close');
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalEl.addEventListener('click', function (e) {
+      if (e.target === modalEl) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modalEl.classList.contains('is-open')) closeModal();
+    });
+    return modalEl;
+  }
+
+  function openModal(widget) {
+    var m = ensureModal();
+    var title = '';
+    var t = widget.querySelector('.widget__title');
+    if (t) title = t.textContent.trim();
+    m.querySelector('.widget-modal__title').textContent = title;
+
+    var body = m.querySelector('.widget-modal__body');
+    body.innerHTML = '';
+    var clone = widget.cloneNode(true);
+    clone.querySelectorAll('canvas').forEach(function (c) {
+      var old = c.id;
+      c.id = old ? old + '__modal' : '';
+      c.removeAttribute('width');
+      c.removeAttribute('height');
+    });
+    clone.querySelectorAll('[id]').forEach(function (el) {
+      if (el.tagName !== 'CANVAS' && !el.id.endsWith('__modal')) {
+        el.id = el.id + '__modal';
+      }
+    });
+    body.appendChild(clone);
+    m.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    var initScript = widget.getAttribute('data-widget-init');
+    if (initScript && window[initScript]) {
+      try { window[initScript](clone); } catch (e) { console.error(e); }
+    } else {
+      widget.dispatchEvent(new CustomEvent('widget:maximized', { detail: { clone: clone } }));
+    }
+  }
+
+  function closeModal() {
+    if (!modalEl) return;
+    modalEl.classList.remove('is-open');
+    modalEl.querySelector('.widget-modal__body').innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  function handleRefresh(btn) {
+    if (btn.classList.contains('is-spinning')) return;
+    btn.classList.add('is-spinning');
+    var widget = btn.closest('.widget');
+    setTimeout(function () { btn.classList.remove('is-spinning'); }, 650);
+    if (!widget) return;
+    var initScript = widget.getAttribute('data-widget-init');
+    if (initScript && window[initScript]) {
+      try { window[initScript](widget); } catch (e) { console.error(e); }
+    } else {
+      widget.dispatchEvent(new CustomEvent('widget:refresh'));
+    }
+  }
+
+  function initToolbarHandlers() {
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('.widget__toolbar-btn');
+      if (!btn) return;
+      var tooltip = (btn.getAttribute('data-tooltip') || '').toLowerCase();
+      if (tooltip === 'maximize') {
+        e.stopPropagation();
+        var widget = btn.closest('.widget');
+        if (widget) openModal(widget);
+      } else if (tooltip === 'refresh') {
+        e.stopPropagation();
+        handleRefresh(btn);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initToolbarHandlers);
+  } else {
+    initToolbarHandlers();
+  }
+
   /* ── PUBLIC API ── */
   window.ElegantWidget = {
     donut: donut,
@@ -461,6 +571,11 @@
     bubble: bubble,
     prioBar: prioBar,
     alertFeed: alertFeed,
+    openModal: function (sel) {
+      var w = typeof sel === 'string' ? document.querySelector(sel) : sel;
+      if (w) openModal(w);
+    },
+    closeModal: closeModal,
     COLORS: COLORS,
     PALETTE: PALETTE,
   };
