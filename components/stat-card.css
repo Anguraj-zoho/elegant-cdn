@@ -1,133 +1,156 @@
 /* ============================================================
-   STAT CARD — clean, horizontal KPI tile (Elegant 1.0)
-   One component, 4 variants (differ only by right-side slot):
-     V1 Plain + Sparkline
-     V2 Severity Chips
-     V3 Severity Chips + Icon
-     V4 Simple + Link + Icon
-   Mirror source: data/Components-Wiki/stat_card.md
+   STAT CARD — canonical Log360 KPI tile
+   Source of truth: https://anguraj-zoho.github.io/opencanary/
+                     (Events Overview tab, dash-row row 1)
+   One component, 4 variants (differ only by right-side decoration):
+     V1 Sparkline        — .sc-deco-sparkline SVG
+     V2 Donut + Badges   — .sc-deco-donut SVG + .sc-badges row
+     V3 Icon + Badges    — .sc-tile-icon + .sc-badges row
+     V4 Icon + Links     — .sc-tile-icon + .sc-links row
+   Mirror: data/Components-Wiki/stat_card.md
    ============================================================ */
 
-/* ── Horizontal row of cards ── */
-.stat-card-row {
-  display: flex;
-  gap: 16px;
-  align-items: stretch;
-  flex-wrap: wrap;
-}
-.stat-card-row > .stat-card { flex: 1 1 240px; min-width: 0; }
+/* ── Dashboard grid wrappers (single row of stat-cards) ── */
+.dash-grid  { display: flex; flex-direction: column; gap: 4px; }
+.dash-row   { display: flex; gap: 4px; }
+.dash-row > * { flex: 1; min-width: 0; }
 
 /* ── Card container ── */
-.stat-card {
+.sc {
   background: #FFFFFF;
   border: 1px solid #E9E9E9;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 20px 24px;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
   font-family: var(--font-family, 'Zoho Puvi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
 }
 
-/* ── Label (uppercase small grey) ── */
-.stat-card__label {
+/* ── Top row: label/value/trend on the left, decoration on the right ── */
+.sc-icon-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* ── Label (uppercase 11px grey) ── */
+.sc-label {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
   color: #626262;
 }
 
-/* ── Body: left (value+trend) | slot (sparkline/chips/link) | icon ── */
-.stat-card__body {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-}
-.stat-card__left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.stat-card__value {
-  font-size: 36px;
+/* ── Big value (28px) ── */
+.sc-value {
+  font-size: 28px;
   font-weight: 400;
-  color: #000000;
-  line-height: 1.05;
-}
-
-/* Trend (default green up; add --down for red) */
-.stat-card__trend {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #198019;
-}
-.stat-card__trend img { width: 12px; height: 12px; }
-.stat-card__trend--down { color: #DD1616; }
-
-/* Right slot (sparkline / chips) */
-.stat-card__slot {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-/* Severity chips */
-.stat-card__chips {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.stat-card__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
   color: #000;
-  white-space: nowrap;
-}
-.stat-card__chip-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.stat-card__chip b { font-weight: 600; }
-
-/* Decorative right-side icon */
-.stat-card__icon {
-  width: 44px;
-  height: 44px;
-  margin-left: auto;
-  flex-shrink: 0;
-  opacity: 0.85;
+  margin-top: 8px;
+  line-height: 1.1;
 }
 
-/* Action link (V4) */
-.stat-card__link {
-  font-size: 12px;
-  font-weight: 500;
+/* ── Change/trend pill (small rounded tinted badge) ── */
+.sc-change {
+  font-size: 11px;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border-radius: 40px;
+  padding: 2px 4px;
+  width: fit-content;
+}
+.sc-up   { color: #188E4E; background: rgba(25, 128, 25, 0.10); }
+.sc-down { color: #DD1616; background: rgba(221, 22, 22, 0.10); }
+.sc-trend-icon { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* ── Links row (V4) ── */
+.sc-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.sc-links a {
+  font-size: 11px;
   color: #2C66DD;
   text-decoration: none;
 }
-.stat-card__link:hover { text-decoration: underline; }
+.sc-links a:hover  { text-decoration: underline; }
+.sc-links a.red    { color: #DD1616; }
 
-/* Sparkline canvas */
-.stat-card__spark {
-  width: 120px;
-  height: 36px;
-  display: block;
+/* ── Badges row (V2/V3) ── */
+.sc-badges {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.sc-badge {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #000;
+}
+.sc-badge-icon { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── Right-side decorations ── */
+.sc-deco {
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0.7;
 }
 
-/* Responsive: stack on narrow viewports */
+/* V1 — sparkline (72×36 SVG, blue line + gradient fill) */
+.sc-deco-sparkline { width: 72px; height: 36px; overflow: visible; }
+.sc-deco-sparkline .spark-line { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.sc-deco-sparkline .spark-area { stroke: none; }
+
+/* V2 — mini donut (48×48 SVG) */
+.sc-deco-donut { width: 48px; height: 48px; position: relative; opacity: 1; }
+.sc-deco-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.sc-deco-donut circle { fill: none; stroke-width: 4; }
+.sc-deco-donut .donut-track { stroke: #F0F0F0; }
+.sc-deco-donut .donut-fill  { stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+
+/* V3/V4 — tile icon (Lucide SVG or regular <img>) */
+.sc-tile-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  margin-left: auto;
+  stroke-width: 1.5;
+}
+.sc-tile-icon svg { width: 100%; height: 100%; }
+
+/* ── Entrance animations (optional; add `.sc-animated` to the dash-grid) ── */
+@keyframes scCardIn    { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes scValPop    { from { opacity: 0; transform: scale(0.85); }      to { opacity: 1; transform: none; } }
+@keyframes scTrendSlide{ from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
+@keyframes scBadgeSlide{ from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+@keyframes scIconFade  { from { opacity: 0; transform: scale(0.6); }       to { opacity: 0.7; transform: none; } }
+@keyframes scSparkDraw { from { stroke-dashoffset: 200; }                  to { stroke-dashoffset: 0; } }
+@keyframes scSparkFill { from { opacity: 0; }                              to { opacity: 1; } }
+@keyframes scDonutDraw { from { stroke-dashoffset: 126; }                  to { stroke-dashoffset: 0; } }
+
+.sc-animated .sc { animation: scCardIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+.sc-animated .sc:nth-child(1) { animation-delay: 0.05s; }
+.sc-animated .sc:nth-child(2) { animation-delay: 0.13s; }
+.sc-animated .sc:nth-child(3) { animation-delay: 0.21s; }
+.sc-animated .sc:nth-child(4) { animation-delay: 0.29s; }
+.sc-animated .sc-value  { animation: scValPop    0.45s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+.sc-animated .sc-change { animation: scTrendSlide 0.35s ease 0.35s both; }
+.sc-animated .sc-links  { animation: scTrendSlide 0.35s ease 0.55s both; }
+.sc-animated .sc-badge  { animation: scBadgeSlide 0.3s ease both; }
+.sc-animated .sc-tile-icon { animation: scIconFade 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s both; }
+.sc-animated .sc-deco-sparkline .spark-line { stroke-dasharray: 200; animation: scSparkDraw 1.2s ease 0.4s both; }
+.sc-animated .sc-deco-sparkline .spark-area { animation: scSparkFill 0.8s ease 1s both; opacity: 0; }
+
+/* ── Responsive: stack on narrow viewports ── */
 @media (max-width: 900px) {
-  .stat-card-row { flex-direction: column; }
+  .dash-row { flex-direction: column; }
 }
