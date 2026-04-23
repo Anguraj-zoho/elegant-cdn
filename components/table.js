@@ -252,12 +252,79 @@
     });
   }
 
+  function initT2Dropdowns() {
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('[data-t2-toggle="dropdown"]');
+      if (trigger) {
+        e.stopPropagation();
+        var wrap = trigger.closest('.t2-dropdown-wrap');
+        if (!wrap) return;
+        var dd = wrap.querySelector('.t2-dropdown');
+        if (!dd) return;
+        var wasOpen = dd.classList.contains('t2-dropdown--open');
+        document.querySelectorAll('.t2-dropdown--open').forEach(function (d) {
+          d.classList.remove('t2-dropdown--open');
+        });
+        if (!wasOpen) dd.classList.add('t2-dropdown--open');
+        return;
+      }
+
+      var item = e.target.closest('.t2-dropdown__item');
+      if (item) {
+        e.stopPropagation();
+        var dd = item.closest('.t2-dropdown');
+        var wrap = item.closest('.t2-dropdown-wrap');
+        if (!dd || !wrap) return;
+        dd.querySelectorAll('.t2-dropdown__item').forEach(function (i) {
+          i.classList.remove('t2-dropdown__item--active');
+        });
+        item.classList.add('t2-dropdown__item--active');
+
+        if (dd.classList.contains('t2-dropdown--status')) {
+          var trigger = wrap.querySelector('[data-t2-toggle="dropdown"]');
+          if (trigger) {
+            var pill = item.querySelector('.t2-status');
+            if (pill) {
+              trigger.className = pill.className;
+              trigger.setAttribute('data-t2-toggle', 'dropdown');
+              var label = pill.textContent.trim();
+              var chevron = trigger.querySelector('.t2-status__chevron');
+              trigger.textContent = label + ' ';
+              if (chevron) trigger.appendChild(chevron);
+              else {
+                var img = document.createElement('img');
+                img.className = 't2-status__chevron';
+                img.alt = '';
+                var cdnBase = 'https://cdn.jsdelivr.net/gh/Anguraj-zoho/elegant-cdn@main';
+                img.src = cdnBase + '/assets/icons/icon-chevron-down.svg';
+                trigger.appendChild(img);
+              }
+            }
+          }
+        }
+
+        if (dd.classList.contains('t2-dropdown--assignee')) {
+          var nameEl = wrap.querySelector('.t2-assignee__name');
+          if (nameEl) nameEl.textContent = item.getAttribute('data-value') || '';
+        }
+
+        dd.classList.remove('t2-dropdown--open');
+        return;
+      }
+
+      document.querySelectorAll('.t2-dropdown--open').forEach(function (d) {
+        d.classList.remove('t2-dropdown--open');
+      });
+    });
+  }
+
   function init() {
     initCheckboxes();
     initRowHighlight();
     initRefreshBtn();
     initActionBarStates();
     observeTableBody();
+    initT2Dropdowns();
   }
 
   if (document.readyState === 'loading') {

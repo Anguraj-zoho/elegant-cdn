@@ -413,3 +413,66 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ── Inline Dropdown (Status & Assignee) ── */
+.t2-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+.t2-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #E9E9E9;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 50;
+  padding: 4px 0;
+  font-family: var(--font-family);
+  font-size: 12px;
+}
+.t2-dropdown--open {
+  display: block;
+}
+.t2-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  cursor: pointer;
+  color: #000;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+.t2-dropdown__item:hover {
+  background: #F5F5F5;
+}
+.t2-dropdown__item--active {
+  background: #EAF0FC;
+  font-weight: 500;
+}
+.t2-dropdown__item img,
+.t2-dropdown__item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.t2-dropdown__item .t2-status {
+  pointer-events: none;
+}
+.t2-dropdown__sep {
+  height: 1px;
+  background: #E9E9E9;
+  margin: 4px 0;
+}
+
+/* Assignee dropdown avatar row */
+.t2-dropdown__item .t2-dd-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
