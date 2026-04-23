@@ -333,6 +333,14 @@
   padding: 0 8px 0 12px;
 }
 
+/* Type 2 flat items: L2 children at 32px, L3 (under sub-headers) at 54px */
+.sidemenu--type2 .sidemenu__item {
+  padding-left: 32px;
+}
+.sidemenu--type2 .sidemenu__l2-subheader ~ .sidemenu__item {
+  padding-left: 54px;
+}
+
 /* Type 2 active L1 (highlighted, blue left border) */
 .sidemenu__l1--active {
   background: var(--sidebar-active-bg);
