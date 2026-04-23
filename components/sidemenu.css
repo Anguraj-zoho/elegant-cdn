@@ -72,9 +72,13 @@
   gap: 8px;
 }
 
-/* Search box */
+/* Search box — sticky at top of scroll area */
 .sidemenu__search-wrap {
   padding: 8px 8px 0 8px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--sidebar-bg, #E9E9E9);
 }
 .sidemenu__search {
   display: flex;
@@ -231,6 +235,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--sidebar-bg, #E9E9E9);
 }
 
 .sidemenu__os-dropdown {
