@@ -75,17 +75,19 @@
   }
 
   function updateRowHighlight(row) {
+    var isT2 = row.closest('.t2-table');
+    var cls = isT2 ? 't2-row--selected' : 'data-table__row--selected';
     if (isRowChecked(row)) {
-      row.classList.add('data-table__row--selected');
+      row.classList.add(cls);
     } else {
-      row.classList.remove('data-table__row--selected');
+      row.classList.remove(cls);
     }
   }
 
   /* ── Initialise checkbox interactions per table ── */
 
   function initCheckboxes() {
-    document.querySelectorAll('.data-table').forEach(function (table) {
+    document.querySelectorAll('.data-table, .t2-table').forEach(function (table) {
       var headerCb = table.querySelector('thead .cell-checkbox');
       var bodyRows = table.querySelectorAll('tbody tr');
 
@@ -187,13 +189,17 @@
 
   /* ── Row click highlight (non-checkbox area) ── */
   function initRowHighlight() {
-    document.querySelectorAll('.data-table tbody tr').forEach(function (row) {
+    document.querySelectorAll('.data-table tbody tr, .t2-table tbody tr').forEach(function (row) {
       row.addEventListener('click', function (e) {
-        if (e.target.closest('.cell-checkbox') || e.target.closest('.cell-actions')) return;
-        document.querySelectorAll('.data-table tbody tr').forEach(function (r) {
-          if (!isRowChecked(r)) r.classList.remove('data-table__row--focused');
-        });
-        if (!isRowChecked(row)) row.classList.add('data-table__row--focused');
+        if (e.target.closest('.cell-checkbox') || e.target.closest('.cell-actions') || e.target.closest('.t2-dropdown-wrap')) return;
+        var table = row.closest('.data-table') || row.closest('.t2-table');
+        var focusCls = row.closest('.t2-table') ? 't2-row--focused' : 'data-table__row--focused';
+        if (table) {
+          table.querySelectorAll('tbody tr').forEach(function (r) {
+            if (!isRowChecked(r)) r.classList.remove(focusCls);
+          });
+        }
+        if (!isRowChecked(row)) row.classList.add(focusCls);
       });
     });
   }
@@ -213,7 +219,7 @@
 
   /* ── MutationObserver: re-init when tbody rows are dynamically added ── */
   function observeTableBody() {
-    document.querySelectorAll('.data-table tbody').forEach(function (tbody) {
+    document.querySelectorAll('.data-table tbody, .t2-table tbody').forEach(function (tbody) {
       var observer = new MutationObserver(function () {
         initCheckboxes();
         initRowHighlight();
